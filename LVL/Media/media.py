@@ -28,9 +28,9 @@ class Media:
         Rating: {self.rating}
         Genre: {self.genre}
         Plot:
-        \t {self.plot}
+        \t{self.plot}
         Poster (B64): {self.poster}
-        Rotton Tomatoes Rating: {self.rottenTomatoesRating}
+        Rotten Tomatoes Rating: {self.rottenTomatoesRating}
         File Path: {self.filePath}
         Duration: {self.duration}
         State: {self.state.name}

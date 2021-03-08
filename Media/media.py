@@ -1,30 +1,30 @@
 class Media:
 
-    def __init__(self):
-        self.title = ''
-        self.year = ''
-        self.rating = ''
-        self.genre = ''
-        self.plot = ''
-        self.poster = ''  # B64 encode of image
-        self.rottenTomatoesRating = ''
-        self.filePath = ''
-        self.duration = ''
-        self.state = None  # Enum of WATCHED, IN_PROGRESS, or UNWATCHED
-        self.playCount = 0
+    def __init__(self, title, year, rating, genre, plot, poster, rottenTomatoesRating, filePath, duration, state, playCount):
+        self.title = title
+        self.year = year
+        self.rating = rating
+        self.genre = genre
+        self.plot = plot
+        self.poster = poster  # B64 encode of image
+        self.rottenTomatoesRating = rottenTomatoesRating
+        self.filePath = filePath
+        self.duration = duration
+        self.state = state  # Enum of WATCHED, IN_PROGRESS, or UNWATCHED
+        self.playCount = playCount
 
-    def __str__(self: Media):
+    def __str__(self):
         return f'''
         Title: {self.title}
         Year: {self.year}
         Rating: {self.rating}
         Genre: {self.genre}
         Plot:
-        {self.plot}
+        \t {self.plot}
         Poster (B64): {self.poster}
         Rotton Tomatoes Rating: {self.rottenTomatoesRating}
         File Path: {self.filePath}
         Duration: {self.duration}
-        State: {self.state}
-        Play Count: {self.playCount}
-        '''
+        State: {self.state.name}
+        Play Count: {self.playCount}'''
+

@@ -28,3 +28,14 @@ class LocalStorageHandler:
             )'''
         )
 
+    def saveToDB(self, imdbID, title, year, rating, genre, plot, poster, rottonTomatoesRating, filePath, duration, state, playCount):
+        self.cursor.execute(
+            '''INSERT INTO MOVIE VALUES (
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            )''', (imdbID, title, year, rating, genre, plot, poster, rottonTomatoesRating, filePath, duration, state, playCount,)
+        )
+        self.connection.commit()
+    
+    def updateInDB(self):
+        # Some kind of code to say find item based on id, then update the needed thing
+        pass

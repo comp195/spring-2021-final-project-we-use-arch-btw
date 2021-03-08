@@ -8,6 +8,7 @@ pygobject = "*"
 
 [dev-packages]
 black = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.9"

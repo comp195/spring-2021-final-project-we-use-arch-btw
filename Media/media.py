@@ -1,3 +1,6 @@
+from state import State
+
+
 class Media:
 
     def __init__(self, title, year, rating, genre, plot, poster, rottenTomatoesRating, filePath, duration, state, playCount):
@@ -28,3 +31,16 @@ class Media:
         State: {self.state.name}
         Play Count: {self.playCount}'''
 
+    def markUnwatched(self):
+        self.state = State.UNWATCHED
+        self.playCount = 0  # Do we want/need this?
+        # TODO Update in DB
+
+    def markWatched(self):
+        self.state = State.WATCHED
+        # TODO Update in DB
+
+    def incrementPlayCount(self):
+        self.markWatched()
+        self.playCount += 1
+        # TODO Update in DB

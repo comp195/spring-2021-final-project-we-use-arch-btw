@@ -1,7 +1,7 @@
 # --- GTK Initialization ---
 import gi
 gi.require_version("Gtk", "3.0")
-from gi.repository import GLib, Gio, Gtk
+from gi.repository import Gio, Gtk
 # --- End GTK Initialization ---
 import sys
 import os
@@ -11,10 +11,29 @@ import os
 class LVLWindow(Gtk.ApplicationWindow):
     __gtype_name__ = "LVLWindow"
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-    @Gtk.Template.Callback("button_click")
-    def on_button_click(self, *args):
-        print(f"Button was clicked with {args}")
+        self.about_dialog = None
+
+
+
+    @Gtk.Template.Callback("about_clicked")
+    def about_clicked(self, widget):
+        if not self.about_dialog:
+            self.about_dialog = Gtk.AboutDialog(
+                program_name="Local Video Library",
+                version = "1.0",
+                authors = ["Austin Whyte", "Alex Reynen"]
+            )
+            self.about_dialog.connect("close", self.close_about)
+            self.about_dialog.connect("response", self.close_about)
+        self.about_dialog.show()
+        pass
+
+    def close_about(self, *args):
+        if self.about_dialog:
+            self.about_dialog.hide()
 
 
 class Application(Gtk.Application):

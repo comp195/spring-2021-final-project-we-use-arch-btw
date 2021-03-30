@@ -11,10 +11,15 @@ import os
 class LVLWindow(Gtk.ApplicationWindow):
     __gtype_name__ = "LVLWindow"
 
+
+    posters = Gtk.Template.Child()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.about_dialog = None
+        self.labels = []
+        self.count = 0
 
 
 
@@ -34,6 +39,16 @@ class LVLWindow(Gtk.ApplicationWindow):
     def close_about(self, *args):
         if self.about_dialog:
             self.about_dialog.hide()
+
+    @Gtk.Template.Callback("test_button_click")
+    def do_a_thing(self, widget):
+        print(self.posters)
+        for i in range(0, 100):
+            label = Gtk.Label(f"Click {self.count}")
+            self.posters.add(label)
+            label.show()
+            self.count += 1
+            self.labels.append(label)
 
 
 class Application(Gtk.Application):

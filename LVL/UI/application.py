@@ -1,30 +1,48 @@
 # --- GTK Initialization ---
+import os
+import sys
+from gi.repository.GdkPixbuf import Pixbuf
+from gi.repository import Gio, Gtk, GdkPixbuf
 import gi
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gio, Gtk
 # --- End GTK Initialization ---
-import sys
-import os
 
 
-@Gtk.Template(filename = os.path.join(os.path.dirname(__file__), "main.ui"))
+@Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "main.ui"))
 class LVLWindow(Gtk.ApplicationWindow):
     __gtype_name__ = "LVLWindow"
+
+    posters = Gtk.Template.Child()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.about_dialog = None
+        # Icons
+        temp_poster_tup = []
+        path = os.path.join(os.path.dirname(__file__), "temp_posters")
+        for i in os.listdir(path):
+            temp_poster_tup.append((i.split(".")[0], os.path.join(path, i)))
+        print(temp_poster_tup)
+        liststore = Gtk.ListStore(Pixbuf, str)
+        iconview = Gtk.IconView.new()
+        iconview.set_model(liststore)
+        iconview.set_pixbuf_column(0)
+        iconview.set_text_column(1)
 
-
+        for i in temp_poster_tup:
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(i[1], 50, 75)
+            liststore.append([pixbuf, i[0]])
+        self.posters.add(iconview)
+        iconview.show()
 
     @Gtk.Template.Callback("about_clicked")
     def about_clicked(self, widget):
         if not self.about_dialog:
             self.about_dialog = Gtk.AboutDialog(
                 program_name="Local Video Library",
-                version = "1.0",
-                authors = ["Austin Whyte", "Alex Reynen"]
+                version="1.0",
+                authors=["Austin Whyte", "Alex Reynen"]
             )
             self.about_dialog.connect("close", self.close_about)
             self.about_dialog.connect("response", self.close_about)
@@ -56,7 +74,6 @@ class Application(Gtk.Application):
     def do_activate(self):
         if not self.window:
             self.window = LVLWindow(application=self)
-        
         self.window.present()
 
     def do_command_line(self, command_line):

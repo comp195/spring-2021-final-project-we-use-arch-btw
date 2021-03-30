@@ -1,11 +1,12 @@
 # --- GTK Initialization ---
 import os
 import sys
-from gi.repository.GdkPixbuf import Pixbuf
-from gi.repository import Gio, Gtk, GdkPixbuf
 import gi
 gi.require_version("Gtk", "3.0")
+gi.require_version('GdkPixbuf', '2.0')
 # --- End GTK Initialization ---
+from gi.repository import Gio, Gtk, GdkPixbuf
+from gi.repository.GdkPixbuf import Pixbuf
 
 
 @Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "main.ui"))
@@ -23,7 +24,7 @@ class LVLWindow(Gtk.ApplicationWindow):
         path = os.path.join(os.path.dirname(__file__), "temp_posters")
         for i in os.listdir(path):
             temp_poster_tup.append((i.split(".")[0], os.path.join(path, i)))
-        print(temp_poster_tup)
+        # print(temp_poster_tup)
         liststore = Gtk.ListStore(Pixbuf, str)
         iconview = Gtk.IconView.new()
         iconview.set_model(liststore)

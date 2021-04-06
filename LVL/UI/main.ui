@@ -93,6 +93,7 @@
                   <object class="GtkFlowBox" id="posters">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="homogeneous">True</property>
                   </object>
                 </child>
               </object>

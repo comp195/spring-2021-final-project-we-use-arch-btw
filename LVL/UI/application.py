@@ -5,8 +5,9 @@ import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version('GdkPixbuf', '2.0')
 # --- End GTK Initialization ---
-from gi.repository import Gio, Gtk, GdkPixbuf
-from gi.repository.GdkPixbuf import Pixbuf
+from gi.repository import Gio, Gtk, GdkPixbuf, Gdk
+
+from fuzzywuzzy import process
 
 
 @Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "main.ui"))
@@ -14,28 +15,30 @@ class LVLWindow(Gtk.ApplicationWindow):
     __gtype_name__ = "LVLWindow"
 
     posters = Gtk.Template.Child()
+    search_entry = Gtk.Template.Child()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.about_dialog = None
-        # Icons
-        temp_poster_tup = []
+        self.poster_list = {}
+        self.poster_gobjects = {}
+        self.search_query = ""
+
+        # This is temporary
         path = os.path.join(os.path.dirname(__file__), "temp_posters")
         for i in os.listdir(path):
-            temp_poster_tup.append((i.split(".")[0], os.path.join(path, i)))
-        # print(temp_poster_tup)
-        liststore = Gtk.ListStore(Pixbuf, str)
+            self.poster_list[os.path.splitext(i)[0]] =  os.path.join(path, i)
+            self.poster_gobjects[os.path.join(path, i)] = GdkPixbuf.Pixbuf.new_from_file_at_size(os.path.join(path, i), 50, 75)
+
+        self.liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, str)
         iconview = Gtk.IconView.new()
-        iconview.set_model(liststore)
+        iconview.set_model(self.liststore)
         iconview.set_pixbuf_column(0)
         iconview.set_text_column(1)
-
-        for i in temp_poster_tup:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(i[1], 50, 75)
-            liststore.append([pixbuf, i[0]])
         self.posters.add(iconview)
         iconview.show()
+        self.update_search()
 
     @Gtk.Template.Callback("about_clicked")
     def about_clicked(self, widget):
@@ -48,6 +51,34 @@ class LVLWindow(Gtk.ApplicationWindow):
             self.about_dialog.connect("close", self.close_about)
             self.about_dialog.connect("response", self.close_about)
         self.about_dialog.show()
+        pass
+    
+    @Gtk.Template.Callback("search_change")
+    def search_change(self, widget):
+        self.search_query = widget.props.text
+        self.update_search()
+        pass
+
+    def do_key_press_event(self, event):
+        if event.keyval == Gdk.KEY_Escape:
+            self.search_entry.set_text("")
+            self.search_query = ""
+            self.update_search()
+        return Gtk.ApplicationWindow.do_key_press_event(self, event)
+    
+    def update_search(self):
+        if self.search_query != "":
+            self.liststore.clear()
+            ranked = process.extract(self.search_query, self.poster_list.keys())
+            for entry, score in ranked:
+                if score < 50:
+                    continue
+                self.liststore.append([self.poster_gobjects[self.poster_list[entry]], entry])
+        else:
+            # Show everything on an empty search
+            self.liststore.clear()
+            for name, path in self.poster_list.items():
+                self.liststore.append([self.poster_gobjects[path], name])
         pass
 
     def close_about(self, *args):

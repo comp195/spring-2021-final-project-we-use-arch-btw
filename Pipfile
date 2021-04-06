@@ -5,9 +5,10 @@ name = "pypi"
 
 [packages]
 pygobject = "*"
+fuzzywuzzy = "*"
+python-levenshtein = "*"
 
 [dev-packages]
-black = "*"
 pylint = "*"
 
 [requires]

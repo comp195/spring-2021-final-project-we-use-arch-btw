@@ -53,6 +53,18 @@ class LVLWindow(Gtk.ApplicationWindow):
         self.about_dialog.show()
         pass
     
+    @Gtk.Template.Callback("add_media")
+    def show_add_media(self, widget):
+        file_picker = Gtk.FileChooserDialog("Select a folder", self,
+                                       Gtk.FileChooserAction.SELECT_FOLDER,
+                                       (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                        Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        response = file_picker.run()
+        if response == Gtk.ResponseType.OK:
+            print(f"Open clicked {file_picker.get_filename()}")
+            # TODO: hook this up to the media backend
+        file_picker.destroy()
+    
     @Gtk.Template.Callback("search_change")
     def search_change(self, widget):
         self.search_query = widget.props.text

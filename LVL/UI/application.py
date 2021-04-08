@@ -1,3 +1,4 @@
+# pylint: disable=no-member
 # --- GTK Initialization ---
 import os
 import sys
@@ -36,6 +37,7 @@ class LVLWindow(Gtk.ApplicationWindow):
         iconview.set_model(self.liststore)
         iconview.set_pixbuf_column(0)
         iconview.set_text_column(1)
+        iconview.connect('selection-changed', self.on_media_select)
         self.posters.add(iconview)
         iconview.show()
         self.update_search()
@@ -96,6 +98,13 @@ class LVLWindow(Gtk.ApplicationWindow):
     def close_about(self, *args):
         if self.about_dialog:
             self.about_dialog.hide()
+    
+    def on_media_select(self, iconview):
+        selected = iconview.get_selected_items()
+        if len(selected) > 0:
+            index = selected[0].get_indices()[0] # This will probably break at some point but yolo
+            print(f"Selected item {index}, we should probably open a dialog here or something")
+            iconview.unselect_all()
 
 
 class Application(Gtk.Application):

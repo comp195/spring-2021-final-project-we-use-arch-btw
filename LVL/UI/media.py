@@ -16,8 +16,13 @@ class MediaDetails(Gtk.Window):
 
     media_title = Gtk.Template.Child()
     media_year = Gtk.Template.Child()
+    media_poster = Gtk.Template.Child()
+    media_information = Gtk.Template.Child()
 
     def __init__(self, media: Media, application):
         super().__init__(application=application)
         self.media_title.props.label = media.title
         self.media_year.props.label = f"<i>{media.year}</i>"
+        self.poster_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(media.poster, 300, 400)
+        self.media_poster.props.pixbuf = self.poster_pixbuf
+

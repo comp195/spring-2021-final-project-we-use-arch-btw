@@ -30,7 +30,7 @@ class LVLWindow(Gtk.ApplicationWindow):
         self.media_gobjects = {}
         self.search_query = ""
         self.media_ui = None
-        self.application = kwargs['application'];
+        self.application = kwargs['application']
 
         # Temporarily load some media
         self._load_temporary_media()

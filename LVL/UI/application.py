@@ -12,6 +12,7 @@ from gi.repository import Gio, Gtk, GdkPixbuf, Gdk
 from fuzzywuzzy import process
 from LVL.Media.media import Media
 from LVL.Media.state import State
+from LVL.UI.media import MediaDetails
 
 
 @Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "main.ui"))
@@ -28,6 +29,8 @@ class LVLWindow(Gtk.ApplicationWindow):
         self.media = []
         self.media_gobjects = {}
         self.search_query = ""
+        self.media_ui = None
+        self.application = kwargs['application'];
 
         # Temporarily load some media
         self._load_temporary_media()
@@ -110,8 +113,18 @@ class LVLWindow(Gtk.ApplicationWindow):
             selected = selected[0]
             value = self.media_liststore.get_value(self.media_liststore.get_iter(selected), 2)
             print(f"Opening media dialog for {value}")
+            for m in self.media:
+                if m.imdbID == value:
+                    self.open_media_dialog(m)
+                    break
         iconview.unselect_all()
 
+    def open_media_dialog(self, media: Media):
+        if self.media_ui is not None:
+            self.media_ui.destroy()
+        self.media_ui = MediaDetails(media, self.application)
+        self.media_ui.present()
+    
     def _load_media_posters(self):
         for m in self.media:
             self.media_gobjects[m.imdbID] = GdkPixbuf.Pixbuf.new_from_file_at_size(m.poster, 50, 75)

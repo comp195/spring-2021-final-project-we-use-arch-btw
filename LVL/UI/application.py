@@ -39,13 +39,10 @@ class LVLWindow(Gtk.ApplicationWindow):
         self._load_media_posters()
 
         self.media_liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, str, str) # Image, Title, IMDB ID
-        iconview = Gtk.IconView.new()
-        iconview.set_model(self.media_liststore)
-        iconview.set_pixbuf_column(0)
-        iconview.set_text_column(1)
-        iconview.connect('selection-changed', self.on_media_select)
-        self.posters.add(iconview)
-        iconview.show()
+        self.posters.set_model(self.media_liststore)
+        self.posters.set_pixbuf_column(0)
+        self.posters.set_text_column(1)
+        self.posters.connect('selection-changed', self.on_media_select)
         self.update_search()
 
     @Gtk.Template.Callback("about_clicked")
@@ -136,7 +133,7 @@ class LVLWindow(Gtk.ApplicationWindow):
                 'tt4154796',
                 'Avengers: Endgame',
                 '2019',
-                '8.4',
+                'PG13',
                 'Action, Adventure, Drama',
                 'The plot',
                 os.path.join(temp_poster_path, 'Avengers: Endgame.jpg'),
@@ -150,7 +147,7 @@ class LVLWindow(Gtk.ApplicationWindow):
                 'tt0338621',
                 'Kirby: Right Back at Ya!',
                 '2001-2003',
-                '6.7',
+                'TV-Y',
                 'Animation, Action, Adventure',
                 'The plot',
                 os.path.join(temp_poster_path, 'Kirby Right Back At You.jpg'),
@@ -164,9 +161,9 @@ class LVLWindow(Gtk.ApplicationWindow):
                 'tt0368226',
                 'The Room',
                 '2003',
-                '3.7',
+                'R',
                 'Drama',
-                'The plot',
+                'Johnny is a successful bank executive who lives quietly in a San Francisco townhouse with his fiancée, Lisa. One day, putting aside any scruple, she seduces Johnny\'s best friend, Mark. From there, nothing will be the same again. ',
                 os.path.join(temp_poster_path, 'The Room.jpg'),
                 'N/A',
                 '',
@@ -178,7 +175,7 @@ class LVLWindow(Gtk.ApplicationWindow):
                 'tt1285016',
                 'The Social Network',
                 '2010',
-                '7.7',
+                'PG-13',
                 'Drama, Biography',
                 'The plot',
                 os.path.join(temp_poster_path, 'The Social Network.jpg'),

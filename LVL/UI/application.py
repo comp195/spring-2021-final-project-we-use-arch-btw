@@ -1,6 +1,7 @@
 # pylint: disable=no-member
 # --- GTK Initialization ---
 import os
+from re import search
 import sys
 import gi
 gi.require_version("Gtk", "3.0")
@@ -9,6 +10,8 @@ gi.require_version('GdkPixbuf', '2.0')
 from gi.repository import Gio, Gtk, GdkPixbuf, Gdk
 
 from fuzzywuzzy import process
+from LVL.Media.media import Media
+from LVL.Media.state import State
 
 
 @Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "main.ui"))
@@ -22,19 +25,19 @@ class LVLWindow(Gtk.ApplicationWindow):
         super().__init__(*args, **kwargs)
 
         self.about_dialog = None
-        self.poster_list = {}
-        self.poster_gobjects = {}
+        self.media = []
+        self.media_gobjects = {}
         self.search_query = ""
 
-        # This is temporary
-        path = os.path.join(os.path.dirname(__file__), "temp_posters")
-        for i in os.listdir(path):
-            self.poster_list[os.path.splitext(i)[0]] =  os.path.join(path, i)
-            self.poster_gobjects[os.path.join(path, i)] = GdkPixbuf.Pixbuf.new_from_file_at_size(os.path.join(path, i), 50, 75)
+        # Temporarily load some media
+        self._load_temporary_media()
 
-        self.liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, str)
+        # Cache the list of posters
+        self._load_media_posters()
+
+        self.media_liststore = Gtk.ListStore(GdkPixbuf.Pixbuf, str, str) # Image, Title, IMDB ID
         iconview = Gtk.IconView.new()
-        iconview.set_model(self.liststore)
+        iconview.set_model(self.media_liststore)
         iconview.set_pixbuf_column(0)
         iconview.set_text_column(1)
         iconview.connect('selection-changed', self.on_media_select)
@@ -82,18 +85,20 @@ class LVLWindow(Gtk.ApplicationWindow):
     
     def update_search(self):
         if self.search_query != "":
-            self.liststore.clear()
-            ranked = process.extract(self.search_query, self.poster_list.keys())
-            for entry, score in ranked:
+            self.media_liststore.clear()
+            search_dictionary = {}
+            for m in self.media:
+                search_dictionary[m.imdbID] = m.title
+            ranked = process.extract(self.search_query, search_dictionary)
+            for title, score, id in ranked:
                 if score < 50:
                     continue
-                self.liststore.append([self.poster_gobjects[self.poster_list[entry]], entry])
+                self.media_liststore.append([self.media_gobjects[id], title, id])
         else:
-            # Show everything on an empty search
-            self.liststore.clear()
-            for name, path in self.poster_list.items():
-                self.liststore.append([self.poster_gobjects[path], name])
-        pass
+            self.media_liststore.clear()
+            for m in self.media:
+                poster = self.media_gobjects[m.imdbID]
+                self.media_liststore.append([poster, m.title, m.imdbID])
 
     def close_about(self, *args):
         if self.about_dialog:
@@ -102,9 +107,77 @@ class LVLWindow(Gtk.ApplicationWindow):
     def on_media_select(self, iconview):
         selected = iconview.get_selected_items()
         if len(selected) > 0:
-            index = selected[0].get_indices()[0] # This will probably break at some point but yolo
-            print(f"Selected item {index}, we should probably open a dialog here or something")
-            iconview.unselect_all()
+            selected = selected[0]
+            value = self.media_liststore.get_value(self.media_liststore.get_iter(selected), 2)
+            print(f"Opening media dialog for {value}")
+        iconview.unselect_all()
+
+    def _load_media_posters(self):
+        for m in self.media:
+            self.media_gobjects[m.imdbID] = GdkPixbuf.Pixbuf.new_from_file_at_size(m.poster, 50, 75)
+
+    def _load_temporary_media(self):
+        temp_poster_path = os.path.join(os.path.dirname(__file__), "temp_posters")
+        media = [
+            [
+                'tt4154796',
+                'Avengers: Endgame',
+                '2019',
+                '8.4',
+                'Action, Adventure, Drama',
+                'The plot',
+                os.path.join(temp_poster_path, 'Avengers: Endgame.jpg'),
+                'N/A',
+                '',
+                '',
+                 State.UNWATCHED,
+                0
+            ],
+            [
+                'tt0338621',
+                'Kirby: Right Back at Ya!',
+                '2001-2003',
+                '6.7',
+                'Animation, Action, Adventure',
+                'The plot',
+                os.path.join(temp_poster_path, 'Kirby Right Back At You.jpg'),
+                'N/A',
+                '',
+                '',
+                State.UNWATCHED,
+                0
+            ],
+            [
+                'tt0368226',
+                'The Room',
+                '2003',
+                '3.7',
+                'Drama',
+                'The plot',
+                os.path.join(temp_poster_path, 'The Room.jpg'),
+                'N/A',
+                '',
+                '',
+                State.UNWATCHED,
+                0
+            ],
+            [
+                'tt1285016',
+                'The Social Network',
+                '2010',
+                '7.7',
+                'Drama, Biography',
+                'The plot',
+                os.path.join(temp_poster_path, 'The Social Network.jpg'),
+                'N/A',
+                '',
+                '',
+                State.UNWATCHED,
+                0
+            ]
+        ]
+        for m in media:
+            self.media.append(Media(*m))
 
 
 class Application(Gtk.Application):

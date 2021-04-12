@@ -26,3 +26,7 @@ class MediaDetails(Gtk.Window):
         self.poster_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(media.poster, 300, 400)
         self.media_poster.props.pixbuf = self.poster_pixbuf
 
+        self.text_buff = Gtk.TextBuffer()
+        self.text_buff.props.text = f"{media.plot}\n\nRated: {media.rating}\nGenre: {media.genre}"
+        self.media_information.props.buffer = self.text_buff
+

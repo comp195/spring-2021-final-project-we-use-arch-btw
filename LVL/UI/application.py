@@ -13,6 +13,7 @@ from fuzzywuzzy import process
 from LVL.Media.media import Media
 from LVL.Media.state import State
 from LVL.UI.media import MediaDetails
+from LVL.LocalStorageHandler.handler import LocalStorageHandler
 
 
 @Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "main.ui"))
@@ -191,12 +192,10 @@ class LVLWindow(Gtk.ApplicationWindow):
 
 
 class Application(Gtk.Application):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, storage_handler: LocalStorageHandler):
         super().__init__(
-            *args,
             application_id="com.github.lvl",
-            flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE,
-            **kwargs
+            flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE
         )
         self.window = None
 

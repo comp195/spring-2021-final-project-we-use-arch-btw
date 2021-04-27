@@ -184,7 +184,7 @@ class LVLWindow(Gtk.ApplicationWindow):
                 '',
                 '',
                 State.UNWATCHED,
-                0
+                30
             ]
         ]
         for m in media:

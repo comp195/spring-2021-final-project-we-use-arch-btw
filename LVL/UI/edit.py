@@ -8,6 +8,8 @@ from gi.repository import Gio, Gtk, GdkPixbuf, Gdk
 import os
 from re import search
 import sys
+import tempfile
+import shutil
 
 
 @Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "edit.ui"))
@@ -39,8 +41,8 @@ class EditWindow(Gtk.Window):
         self.plot_buff.props.text = media.plot
         self.plot_box.props.buffer = self.plot_buff
 
-        self.poster_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(media.poster, 300, 400)
-        self.poster_image.props.pixbuf = self.poster_pixbuf
+        self._load_poster(media.poster)
+        self.temp_poster = None
 
         self.media_watch_state = media.state
         self._setup_watch_state()
@@ -53,6 +55,35 @@ class EditWindow(Gtk.Window):
     @Gtk.Template.Callback("cancel")
     def cancel_edit(self, widget):
         self.destroy()
+    
+    @Gtk.Template.Callback("poster_edit")
+    def poster_edit(self, widget):
+        file_picker = Gtk.FileChooserDialog("Select a new poster", self,
+                                Gtk.FileChooserAction.OPEN,
+                                (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+
+        file_picker.set_local_only(True)
+
+        image_filter = Gtk.FileFilter()
+        image_filter.set_name("Images")
+        image_filter.add_pixbuf_formats()
+        file_picker.add_filter(image_filter)
+
+        response = file_picker.run()
+        if response == Gtk.ResponseType.OK:
+            print(f"Open clicked {file_picker.get_filename()}")
+
+            # Copy the selected file to a temp file
+            if self.temp_poster is None:
+                self.temp_poster = tempfile.mkstemp()[1]
+                self.connect('destroy', lambda x: os.remove(self.temp_poster))
+            
+            shutil.copyfile(file_picker.get_filename(), self.temp_poster)
+            print(f"Temporary file saved to {self.temp_poster}")
+            self._load_poster(self.temp_poster)
+        
+        file_picker.destroy()
 
     def _setup_watch_state(self):
         watch_states = Gtk.ListStore(str, str)
@@ -81,3 +112,7 @@ class EditWindow(Gtk.Window):
             name, id = model[tree_itr][:2]
             print(f"Selected: ID={id}, name={name}")
             self.media_watch_state = WatchState(id)
+    
+    def _load_poster(self, file_path):
+        self.poster_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(file_path, 300, 400)
+        self.poster_image.props.pixbuf = self.poster_pixbuf

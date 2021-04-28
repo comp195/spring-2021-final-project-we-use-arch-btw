@@ -127,7 +127,7 @@ class LVLWindow(Gtk.ApplicationWindow):
     def open_media_dialog(self, media: Media):
         if self.media_ui is not None:
             self.media_ui.destroy()
-        self.media_ui = MediaDetails(media, self.application)
+        self.media_ui = MediaDetails(media, self.application, self.local_storage_handler)
         self.media_ui.present()
     
     def _load_media_posters(self):

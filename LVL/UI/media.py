@@ -8,6 +8,7 @@ import os
 from re import search
 import sys
 from LVL.Media.media import Media
+from LVL.LocalStorageHandler.handler import LocalStorageHandler
 from LVL.UI.edit import EditWindow
 
 
@@ -21,13 +22,16 @@ class MediaDetails(Gtk.Window):
     media_poster = Gtk.Template.Child()
     media_information = Gtk.Template.Child()
 
-    def __init__(self, media: Media, application):
+    def __init__(self, media: Media, application, handler: LocalStorageHandler):
         super().__init__(application=application)
-
         self.media = media
         self.application = application
+        self.local_storage_handler = handler
         self.edit_window = None
 
+        self.populate_ui(media)
+
+    def populate_ui(self, media):
         self.media_title.props.label = media.title
         self.media_year.props.label = f"<i>{media.year}</i>"
         self.poster_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(media.poster, 300, 400)
@@ -42,14 +46,16 @@ class MediaDetails(Gtk.Window):
     def on_edit_click(self, widget):
         if self.edit_window is not None:
             self.edit_window.destory()
-        self.edit_window = EditWindow(self.media, self.application)
+        self.edit_window = EditWindow(self.media, self.application, self.local_storage_handler)
         self.edit_window.present()
         self.hide()
         self.edit_window.connect('destroy', self.on_edit_close)
     
     def on_edit_close(self, widget):
         self.edit_window = None
-        # TODO: Reload the media information from the backend
+        # Update the view screen
+        self.media = self.local_storage_handler.retrieve_from_db(self.media.imdbID)
+        self.populate_ui(self.media)
         self.show()
         
     @Gtk.Template.Callback("play_button_clicked")

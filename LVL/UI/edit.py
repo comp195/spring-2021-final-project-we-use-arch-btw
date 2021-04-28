@@ -11,6 +11,7 @@ import sys
 import tempfile
 import shutil
 from LVL.LocalStorageHandler.poster_handler import update_poster_file
+from LVL.LocalStorageHandler.handler import LocalStorageHandler
 
 
 @Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "edit.ui"))
@@ -29,10 +30,11 @@ class EditWindow(Gtk.Window):
     file_path = Gtk.Template.Child()
     rotten_tomatoes = Gtk.Template.Child()
 
-    def __init__(self, media: Media, application):
+    def __init__(self, media: Media, application, handler: LocalStorageHandler):
         super().__init__(application=application)
 
         self.media = media
+        self.local_storage_handler = handler
 
         self.title_box.props.text = media.title
         self.year_box.props.text = media.year
@@ -63,7 +65,7 @@ class EditWindow(Gtk.Window):
                             self.rating_box.props.text, self.genre_box.props.text, self.plot_buff.props.text, 
                             self.media.poster, "", self.media.filePath, self.media.duration, 
                             self.media_watch_state, int(self.play_count.props.value))
-        # TODO: Actually save the media
+        self.local_storage_handler.update_in_db(new_media)
         self.destroy()
 
     @Gtk.Template.Callback("cancel")

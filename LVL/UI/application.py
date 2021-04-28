@@ -23,7 +23,7 @@ class LVLWindow(Gtk.ApplicationWindow):
     posters = Gtk.Template.Child()
     search_entry = Gtk.Template.Child()
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, handler: LocalStorageHandler, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.about_dialog = None
@@ -33,8 +33,7 @@ class LVLWindow(Gtk.ApplicationWindow):
         self.media_ui = None
         self.application = kwargs['application']
 
-        self.local_storage_handler = LocalStorageHandler()
-        self.local_storage_handler.initialize_database()
+        self.local_storage_handler = handler
     
         # Temporarily load some media
         # Uncomment to use temp media, real is below
@@ -195,6 +194,7 @@ class Application(Gtk.Application):
             application_id="com.github.lvl",
             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE
         )
+        self.storage_handler = storage_handler
         self.window = None
 
     def do_startup(self):
@@ -206,7 +206,7 @@ class Application(Gtk.Application):
 
     def do_activate(self):
         if not self.window:
-            self.window = LVLWindow(application=self)
+            self.window = LVLWindow(self.storage_handler, application=self)
         self.window.present()
 
     def do_command_line(self, command_line):

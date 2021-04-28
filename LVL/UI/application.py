@@ -37,6 +37,10 @@ class LVLWindow(Gtk.ApplicationWindow):
         self.local_storage_handler.initialize_database()
     
         # Temporarily load some media
+        # Uncomment to use temp media, real is below
+        # self._load_temporary_media()
+
+        # Load media from database
         self._load_persistant_media()
 
         # Cache the list of posters

@@ -34,7 +34,6 @@ class LocalStorageHandler:
                 rating TEXT,
                 genre TEXT,
                 plot TEXT,
-                poster TEXT,
                 rottenTomatoesRating TEXT,
                 filePath TEXT NOT NULL,
                 duration TEXT NOT NULL,
@@ -43,12 +42,12 @@ class LocalStorageHandler:
             )'''
         )
 
-    def save_to_db(self, imdbID, title, year, rating, genre, plot, poster, rottonTomatoesRating, filePath, duration, state, playCount):
+    def save_to_db(self, imdbID, title, year, rating, genre, plot, rottonTomatoesRating, filePath, duration, state, playCount):
         try:
             self.cursor.execute(
                 '''INSERT INTO MOVIE VALUES (
-                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-                )''', (imdbID, title, year, rating, genre, plot, poster, rottonTomatoesRating, filePath, duration, state, playCount,)
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                )''', (imdbID, title, year, rating, genre, plot, rottonTomatoesRating, filePath, duration, state, playCount,)
             )
             self.connection.commit()
         except sqlite3.IntegrityError:
@@ -56,9 +55,9 @@ class LocalStorageHandler:
 
     def update_in_db(self, media: Media):
         self.cursor.execute(
-            """UPDATE MOVIE SET title = ?, year = ?, rating = ?, genre = ?, plot = ?, poster = ?, 
-            rottenTomatoesRating = ?, filePath = ?, duration = ?, state = ?, playCount = ? WHERE imdbId = ?""", 
-        [media.title, media.year, media.rating, media.genre, media.plot, media.poster, media.rottenTomatoesRating, media.filePath, media.duration, media.state.name, media.playCount, media.imdbID])
+            """UPDATE MOVIE SET title = ?, year = ?, rating = ?, genre = ?, plot = ?, rottenTomatoesRating = ?,
+             filePath = ?, duration = ?, state = ?, playCount = ? WHERE imdbId = ?""", 
+        [media.title, media.year, media.rating, media.genre, media.plot, media.rottenTomatoesRating, media.filePath, media.duration, media.state.name, media.playCount, media.imdbID])
         self.connection.commit()
         pass
     
@@ -73,12 +72,11 @@ class LocalStorageHandler:
                     row[3],     # rating
                     row[4],     # genre
                     row[5],     # plot
-                    row[6],     # poster
-                    row[7],     # rottomTomatoesRating
-                    row[8],     # File Path
-                    row[9],     # Duration
-                    State(row[10]),    # State
-                    row[11])    # Play Count
+                    row[6],     # rottomTomatoesRating
+                    row[7],     # File Path
+                    row[8],     # Duration
+                    State(row[9]),    # State
+                    row[10])    # Play Count
         return(m)
         
     
@@ -93,11 +91,10 @@ class LocalStorageHandler:
                     row[3],     # rating
                     row[4],     # genre
                     row[5],     # plot
-                    row[6],     # poster
-                    row[7],     # rottomTomatoesRating
-                    row[8],     # File Path
-                    row[9],     # Duration
-                    State(row[10]),    # State
-                    row[11])    # Play Count
+                    row[6],     # rottomTomatoesRating
+                    row[7],     # File Path
+                    row[8],     # Duration
+                    State(row[9]),    # State
+                    row[10])    # Play Count
             m_list.append(m)
         return(m_list)

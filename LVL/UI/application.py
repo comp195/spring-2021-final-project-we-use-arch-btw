@@ -13,6 +13,7 @@ from fuzzywuzzy import process
 from LVL.Media.media import Media
 from LVL.Media.state import State
 from LVL.UI.media import MediaDetails
+from LVL.LocalStorageHandler.poster_handler import get_poster_file
 from LVL.LocalStorageHandler.handler import LocalStorageHandler
 
 
@@ -131,7 +132,7 @@ class LVLWindow(Gtk.ApplicationWindow):
     
     def _load_media_posters(self):
         for m in self.media:
-            self.media_gobjects[m.imdbID] = GdkPixbuf.Pixbuf.new_from_file_at_size(m.poster, 50, 75)
+            self.media_gobjects[m.imdbID] = GdkPixbuf.Pixbuf.new_from_file_at_size(get_poster_file(m.imdbID), 50, 75)
 
     def _load_temporary_media(self):
         temp_poster_path = os.path.join(os.path.dirname(__file__), "temp_posters")

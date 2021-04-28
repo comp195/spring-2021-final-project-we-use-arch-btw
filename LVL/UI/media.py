@@ -9,6 +9,7 @@ from re import search
 import sys
 from LVL.Media.media import Media
 from LVL.LocalStorageHandler.handler import LocalStorageHandler
+from LVL.LocalStorageHandler.poster_handler import get_poster_file
 from LVL.UI.edit import EditWindow
 
 
@@ -34,7 +35,7 @@ class MediaDetails(Gtk.Window):
     def populate_ui(self, media):
         self.media_title.props.label = media.title
         self.media_year.props.label = f"<i>{media.year}</i>"
-        self.poster_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(media.poster, 300, 400)
+        self.poster_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(get_poster_file(media.imdbID), 300, 400)
         self.media_poster.props.pixbuf = self.poster_pixbuf
 
         self.text_buff = Gtk.TextBuffer()

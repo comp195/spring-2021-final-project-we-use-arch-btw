@@ -10,7 +10,7 @@ from re import search
 import sys
 import tempfile
 import shutil
-from LVL.LocalStorageHandler.poster_handler import update_poster_file
+from LVL.LocalStorageHandler.poster_handler import update_poster_file, get_poster_file
 from LVL.LocalStorageHandler.handler import LocalStorageHandler
 
 
@@ -48,7 +48,7 @@ class EditWindow(Gtk.Window):
         self.plot_buff.props.text = media.plot
         self.plot_box.props.buffer = self.plot_buff
 
-        self._load_poster(media.poster)
+        self._load_poster(get_poster_file(self.media.imdbID))
         self.temp_poster = None
 
         self.media_watch_state = media.state
@@ -60,12 +60,9 @@ class EditWindow(Gtk.Window):
         if self.temp_poster is not None:
             # We need to save the poster
             print("Updating the poster")
-            poster = update_poster_file(self.media.imdbID, self.temp_poster)
-        else:
-            poster = self.media.poster
         new_media = Media(self.media.imdbID, self.title_box.props.text, self.year_box.props.text, 
-                            self.rating_box.props.text, self.genre_box.props.text, self.plot_buff.props.text, 
-                            poster, "", self.media.filePath, self.media.duration, 
+                            self.rating_box.props.text, self.genre_box.props.text, self.plot_buff.props.text,
+                            self.rotten_tomatoes.props.text, self.media.filePath, self.media.duration, 
                             self.media_watch_state, int(self.play_count.props.value))
         self.local_storage_handler.update_in_db(new_media)
         self.destroy()

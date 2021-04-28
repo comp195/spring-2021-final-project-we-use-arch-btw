@@ -1,4 +1,5 @@
 # pylint: disable=no-member
+from LVL.Media.state import State
 import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version('GdkPixbuf', '2.0')
@@ -33,7 +34,7 @@ class MediaDetails(Gtk.Window):
         self.media_poster.props.pixbuf = self.poster_pixbuf
 
         self.text_buff = Gtk.TextBuffer()
-        self.text_buff.props.text = f"{media.plot}\n\nRated: {media.rating}\nGenre: {media.genre}"
+        self.text_buff.props.text = f"{media.plot}\n\nRated: {media.rating}\nGenre: {media.genre}\nRotten Tomatoes: {media.rottenTomatoesRating}\nPlay Count: {media.playCount}\n\n{State.make_human_readable(media.state)}"
         self.media_information.props.buffer = self.text_buff
 
 

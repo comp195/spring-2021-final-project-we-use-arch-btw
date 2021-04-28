@@ -74,18 +74,19 @@ class LVLWindow(Gtk.ApplicationWindow):
         pass
     
     @Gtk.Template.Callback("add_single_media")
-    def show_add_media(self, widget):
+    def add_single_media(self, widget):
         file_picker = Gtk.FileChooserDialog("Select a File", self,
-                                       Gtk.FileChooserAction.SELECT_FOLDER,
+                                       Gtk.FileChooserAction.OPEN,
                                        (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                                         Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         response = file_picker.run()
         if response == Gtk.ResponseType.OK:
             selection = file_picker.get_filename()
-            print(f"Open clicked {selection}")
+            parsed = parse_file(selection)
+            print(f"{selection} = {parsed}")
             if self.api_search_window is not None:
                 self.api_search_window.destory()
-            self.api_search_window = SearchWindow(selection, self.application, self.local_storage_handler)
+            self.api_search_window = SearchWindow(parsed.name, self.application, self.local_storage_handler)
             file_picker.destroy()
             self.api_search_window.present()
             self.api_search_window.connect('destroy', self.test)

@@ -33,8 +33,11 @@ class LVLWindow(Gtk.ApplicationWindow):
         self.media_ui = None
         self.application = kwargs['application']
 
+        self.local_storage_handler = LocalStorageHandler()
+        self.local_storage_handler.initialize_database()
+    
         # Temporarily load some media
-        self._load_temporary_media()
+        self._load_persistant_media()
 
         # Cache the list of posters
         self._load_media_posters()
@@ -145,20 +148,6 @@ class LVLWindow(Gtk.ApplicationWindow):
                 0
             ],
             [
-                'tt0338621',
-                'Kirby: Right Back at Ya!',
-                '2001-2003',
-                'TV-Y',
-                'Animation, Action, Adventure',
-                'The plot',
-                os.path.join(temp_poster_path, 'Kirby Right Back At You.jpg'),
-                'N/A',
-                '~/Movies/kirby.mp4',
-                '',
-                State.UNWATCHED,
-                0
-            ],
-            [
                 'tt0368226',
                 'The Room',
                 '2003',
@@ -189,6 +178,11 @@ class LVLWindow(Gtk.ApplicationWindow):
         ]
         for m in media:
             self.media.append(Media(*m))
+
+    def _load_persistant_media(self):
+        media = self.local_storage_handler.retrieve_all_from_db()
+        for m in media:
+            self.media.append(m)
 
 
 class Application(Gtk.Application):

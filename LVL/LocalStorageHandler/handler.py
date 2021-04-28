@@ -1,4 +1,5 @@
-from LVL.Media.media import Media
+from LVL.Media.media import Media   #  Pylint in vsc doesn't like this for some reason... pylint: disable=import-error
+from LVL.Media.state import State
 import sqlite3
 import os.path
 import os
@@ -55,6 +56,46 @@ class LocalStorageHandler:
         self.cursor.execute(
             """UPDATE MOVIE SET title = ?, year = ?, rating = ?, genre = ?, plot = ?, poster = ?, 
             rottenTomatoesRating = ?, filePath = ?, duration = ?, state = ?, playCount = ? WHERE imdbId = ?""", 
-        media.title, media.year, media.rating, media.genre, media.plot, media.poster, media.rottenTomatoesRating, media.filePath, media.duration, media.state, media.playCount, media.imdbID)
+        [media.title, media.year, media.rating, media.genre, media.plot, media.poster, media.rottenTomatoesRating, media.filePath, media.duration, media.state.name, media.playCount, media.imdbID])
         self.connection.commit()
         pass
+    
+    def retrieve_from_db(self, imdbID):
+        cursor = self.connection.execute(
+            """Select * from Movie WHERE MOVIE.imdbid = ?""",
+            [imdbID])
+        for row in cursor:
+            m = Media(row[0],   # imdbID
+                    row[1],     # title
+                    row[2],     # year
+                    row[3],     # rating
+                    row[4],     # genre
+                    row[5],     # plot
+                    row[6],     # poster
+                    row[7],     # rottomTomatoesRating
+                    row[8],     # File Path
+                    row[9],     # Duration
+                    State(row[10]),    # State
+                    row[11])    # Play Count
+        return(m)
+        
+    
+    def retrieve_all_from_db(self):
+        cursor = self.connection.execute(
+            """Select * from Movie""")
+        m_list = []
+        for row in cursor:
+            m = Media(row[0],   # imdbID
+                    row[1],     # title
+                    row[2],     # year
+                    row[3],     # rating
+                    row[4],     # genre
+                    row[5],     # plot
+                    row[6],     # poster
+                    row[7],     # rottomTomatoesRating
+                    row[8],     # File Path
+                    row[9],     # Duration
+                    State(row[10]),    # State
+                    row[11])    # Play Count
+            m_list.append(m)
+        return(m_list)

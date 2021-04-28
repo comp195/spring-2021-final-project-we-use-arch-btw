@@ -60,6 +60,7 @@ class EditWindow(Gtk.Window):
         if self.temp_poster is not None:
             # We need to save the poster
             print("Updating the poster")
+            update_poster_file(self.media.imdbID, self.temp_poster)
         new_media = Media(self.media.imdbID, self.title_box.props.text, self.year_box.props.text, 
                             self.rating_box.props.text, self.genre_box.props.text, self.plot_buff.props.text,
                             self.rotten_tomatoes.props.text, self.media.filePath, self.media.duration, 

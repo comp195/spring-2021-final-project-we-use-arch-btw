@@ -33,7 +33,7 @@ def download_poster(imdb_id):
     poster_url = media['Poster']
     print(f"Downloading poster from {poster_url}")
     with requests.get(poster_url) as req:
-        with open(get_poster_file(imdb_id), 'wb') as f:
+        with open(get_proper_poster_file(imdb_id), 'wb') as f:
             f.write(req.content)
     print(f"Downloaded poster for {imdb_id} to {get_poster_file(imdb_id)}")
 

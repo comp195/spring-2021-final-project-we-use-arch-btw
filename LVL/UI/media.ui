@@ -160,9 +160,11 @@
             <child>
               <object class="GtkTextView" id="media_information">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can-focus">False</property>
                 <property name="editable">False</property>
                 <property name="wrap-mode">word</property>
+                <property name="cursor-visible">False</property>
                 <property name="accepts-tab">False</property>
               </object>
               <packing>

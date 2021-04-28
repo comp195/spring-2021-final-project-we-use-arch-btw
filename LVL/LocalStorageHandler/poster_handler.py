@@ -6,12 +6,19 @@ import json
 
 OMDB_API_KEY = 'e945ee0b' # Should we really be hardcoding this?
 POSTER_STORAGE_PATH = get_data_file('posters')
+POSTER_MISSING_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..", "missing"))
 
 if not os.path.exists(POSTER_STORAGE_PATH):
     os.makedirs(POSTER_STORAGE_PATH)
 
+def get_missing():
+    print(POSTER_MISSING_PATH)
+
 def get_poster_file(imdb_id):
-    return os.path.join(POSTER_STORAGE_PATH, imdb_id)
+    path = os.path.join(POSTER_STORAGE_PATH, imdb_id)
+    if not os.path.isfile(path):
+        path = POSTER_MISSING_PATH
+    return path
 
 def update_poster_file(imdb_id, new_file):
     # Copy the new file to the existing path

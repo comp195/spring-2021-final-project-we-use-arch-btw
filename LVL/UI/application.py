@@ -13,12 +13,8 @@ from fuzzywuzzy import process
 from LVL.Media.media import Media
 from LVL.Media.state import State
 from LVL.UI.media import MediaDetails
-<<<<<<< HEAD
 from LVL.UI.search import SearchWindow
-from LVL.LocalStorageHandler.poster_handler import get_poster_file
-=======
 from LVL.LocalStorageHandler.poster_handler import get_poster_file, download_poster
->>>>>>> bee6e18f2d7354c29d4bbed6033d7c95401d3a54
 from LVL.LocalStorageHandler.handler import LocalStorageHandler
 from LVL.LocalStorageHandler.media_title_parser import parse_file
 from LVL.omdbapi import omdb_search, omdb_get, parse_result
@@ -85,7 +81,7 @@ class LVLWindow(Gtk.ApplicationWindow):
                                         Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         response = file_picker.run()
         if response == Gtk.ResponseType.OK:
-                    selection = file_picker.get_filename()
+            selection = file_picker.get_filename()
             print(f"Open clicked {selection}")
             if self.api_search_window is not None:
                 self.api_search_window.destory()
@@ -94,6 +90,8 @@ class LVLWindow(Gtk.ApplicationWindow):
             self.api_search_window.present()
             self.api_search_window.connect('destroy', self.test)
             # TODO: hook this up to the media backend
+        else:
+            file_picker.destroy()
 
     def test(self, widget):
         print("test")

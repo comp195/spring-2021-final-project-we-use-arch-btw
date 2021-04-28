@@ -133,11 +133,15 @@ class LVLWindow(Gtk.ApplicationWindow):
             return
         self.media_ui = MediaDetails(media, self.application, self.local_storage_handler)
         self.media_ui.connect('show', self.on_edit_show)
+        self.media_ui.connect('destroy', self.on_media_exit)
         self.media_ui.present()
     
     def on_edit_show(self, widget):
         self._load_persistant_media()
         self.load_posters()
+
+    def on_media_exit(self, widget):
+        self.media_ui = None
 
     def _load_media_posters(self):
         self.media_gobjects = {}

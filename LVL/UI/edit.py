@@ -101,16 +101,11 @@ class EditWindow(Gtk.Window):
 
     def _setup_watch_state(self):
         watch_states = Gtk.ListStore(str, str)
-        state_lookup = {
-            WatchState.IN_PROGRESS: 'In Progress',
-            WatchState.UNWATCHED: 'Unwatched',
-            WatchState.WATCHED: 'Watched'
-        }
         selected_index = 0
         for i, state in enumerate(WatchState):
             if state == self.media_watch_state:
                 selected_index = i
-            watch_states.append([state_lookup[state], state.value])
+            watch_states.append([WatchState.make_human_readable(state), state.value])
         
         renderer_text = Gtk.CellRendererText()
         self.watch_state.props.model = watch_states

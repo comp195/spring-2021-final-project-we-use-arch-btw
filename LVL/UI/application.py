@@ -139,7 +139,7 @@ class LVLWindow(Gtk.ApplicationWindow):
                 'The plot',
                 os.path.join(temp_poster_path, 'Avengers: Endgame.jpg'),
                 'N/A',
-                '',
+                '~/Movies/endgame.mp4',
                 '',
                  State.UNWATCHED,
                 0
@@ -153,7 +153,7 @@ class LVLWindow(Gtk.ApplicationWindow):
                 'The plot',
                 os.path.join(temp_poster_path, 'Kirby Right Back At You.jpg'),
                 'N/A',
-                '',
+                '~/Movies/kirby.mp4',
                 '',
                 State.UNWATCHED,
                 0
@@ -167,7 +167,7 @@ class LVLWindow(Gtk.ApplicationWindow):
                 'Johnny is a successful bank executive who lives quietly in a San Francisco townhouse with his fiancée, Lisa. One day, putting aside any scruple, she seduces Johnny\'s best friend, Mark. From there, nothing will be the same again. ',
                 os.path.join(temp_poster_path, 'The Room.jpg'),
                 'N/A',
-                '',
+                '~/Movies/room.mp4',
                 '',
                 State.UNWATCHED,
                 0
@@ -181,7 +181,7 @@ class LVLWindow(Gtk.ApplicationWindow):
                 'The plot',
                 os.path.join(temp_poster_path, 'The Social Network.jpg'),
                 'N/A',
-                '',
+                '~/Movies/social_network.mp4',
                 '',
                 State.UNWATCHED,
                 30

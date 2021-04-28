@@ -4,12 +4,13 @@ from LVL.Media.state import State as WatchState
 import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version('GdkPixbuf', '2.0')
-from gi.repository import Gio, Gtk, GdkPixbuf, Gdk
+from gi.repository import Gio, Gtk, GdkPixbuf, Gdk, GObject
 import os
 from re import search
 import sys
 import tempfile
 import shutil
+from LVL.LocalStorageHandler.poster_handler import update_poster_file
 
 
 @Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "edit.ui"))
@@ -25,6 +26,8 @@ class EditWindow(Gtk.Window):
     poster_image = Gtk.Template.Child()
     watch_state = Gtk.Template.Child()
     play_count = Gtk.Template.Child()
+    file_path = Gtk.Template.Child()
+    rotten_tomatoes = Gtk.Template.Child()
 
     def __init__(self, media: Media, application):
         super().__init__(application=application)
@@ -36,6 +39,8 @@ class EditWindow(Gtk.Window):
         self.genre_box.props.text = media.genre
         self.rating_box.props.text = media.rating
         self.play_count.props.value = media.playCount
+        self.rotten_tomatoes.props.text = media.rottenTomatoesRating
+        self.file_path.props.text = media.filePath
 
         self.plot_buff = Gtk.TextBuffer()
         self.plot_buff.props.text = media.plot
@@ -50,7 +55,16 @@ class EditWindow(Gtk.Window):
     @Gtk.Template.Callback("save")
     def save_media(self, widget):
         print("Saving the media")
-        pass
+        if self.temp_poster is not None:
+            # We need to save the poster
+            print("Updating the poster")
+            update_poster_file(self.media.imdbID, self.temp_poster)
+        new_media = Media(self.media.imdbID, self.title_box.props.text, self.year_box.props.text, 
+                            self.rating_box.props.text, self.genre_box.props.text, self.plot_buff.props.text, 
+                            self.media.poster, "", self.media.filePath, self.media.duration, 
+                            self.media_watch_state, int(self.play_count.props.value))
+        # TODO: Actually save the media
+        self.destroy()
 
     @Gtk.Template.Callback("cancel")
     def cancel_edit(self, widget):

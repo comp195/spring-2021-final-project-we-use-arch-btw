@@ -45,7 +45,7 @@ WEBSITE_PREFIX_REGEX = r"^\[\s*[-a-z]+(\.[a-z]+)+\s*\][- ]*|^www\.[a-z]+\.(?:com
 WEBSITE_POSTFIX_REGEX = r"\[\s*[-a-z]+(\.[a-z0-9]+)+\s*\]$"
 CLEAN_QUALITY_BRACKETS_REGEX = r"\[[a-z0-9 ._-]+\]$"
 
-def parse_movie_title(title: str):
+def _parse_movie_title(title: str) -> MediaInformation:
     original_title = title
     print(f"Parsing string '{title}'")
 
@@ -79,6 +79,11 @@ def parse_movie_title(title: str):
 def remove_file_extension(title: str) -> str:
     return re.sub(FILE_EXTENSION_REGEX, '', title, flags=re.IGNORECASE)
 
+
+def parse_file(file: str) -> MediaInformation:
+    basename = os.path.splitext(os.path.basename(file))[0]
+    return _parse_movie_title(basename)
+
 if __name__ == "__main__":
-    print(parse_movie_title(
-        "Batman.The.Dark.Knight.2008.1080p.BluRay.x264.YIFY.mp4"))
+    print(parse_file(
+        "~/Desktop/Batman.The.Dark.Knight.2008.1080p.BluRay.x264.YIFY.mp4"))

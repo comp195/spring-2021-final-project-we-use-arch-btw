@@ -13,8 +13,10 @@ from fuzzywuzzy import process
 from LVL.Media.media import Media
 from LVL.Media.state import State
 from LVL.UI.media import MediaDetails
-from LVL.LocalStorageHandler.poster_handler import get_poster_file
+from LVL.LocalStorageHandler.poster_handler import get_poster_file, download_poster
 from LVL.LocalStorageHandler.handler import LocalStorageHandler
+from LVL.LocalStorageHandler.media_title_parser import parse_file
+from LVL.omdbapi import omdb_search, omdb_get, parse_result
 
 
 @Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "main.ui"))
@@ -78,8 +80,34 @@ class LVLWindow(Gtk.ApplicationWindow):
         response = file_picker.run()
         if response == Gtk.ResponseType.OK:
             print(f"Open clicked {file_picker.get_filename()}")
-            # TODO: hook this up to the media backend
-        file_picker.destroy()
+            media_files = []
+            for root, _, files in os.walk(file_picker.get_filename()):
+                for name in files:
+                    print(f"Found file {os.path.join(root, name)}")
+                    media_files.append(os.path.join(root, name))
+
+            file_picker.destroy()
+            # TODO: Make this async
+            for media_file in media_files:
+                parsed = parse_file(media_file)
+                print(f"{media_file} = {parsed}")
+                if parsed is None:
+                    print(f"Could not import {media_file}") # This should also be a dialog box
+                    continue
+                try:
+                    omdb_data = omdb_get(parsed.imdb_id) if parsed.imdb_id is not None else omdb_search(parsed.name, parsed.year)
+                    new_media_obj = parse_result(omdb_data)
+                    new_media_obj.filePath = media_file
+                    self.local_storage_handler.save_media_to_db(new_media_obj)
+                    download_poster(new_media_obj.imdbID)
+                except Exception as e:
+                    print(f"Could not import {media_file}") # This should be a dialog box
+                    raise e
+            self._load_persistant_media()
+            self._load_media_posters()
+            self.update_search()
+        else:
+            file_picker.destroy()
     
     @Gtk.Template.Callback("search_change")
     def search_change(self, widget):
@@ -143,55 +171,6 @@ class LVLWindow(Gtk.ApplicationWindow):
         self.media_gobjects = {}
         for m in self.media:
             self.media_gobjects[m.imdbID] = GdkPixbuf.Pixbuf.new_from_file_at_size(get_poster_file(m.imdbID), 50, 75)
-
-    def _load_temporary_media(self):
-        temp_poster_path = os.path.join(os.path.dirname(__file__), "temp_posters")
-        media = [
-            [
-                'tt4154796',
-                'Avengers: Endgame',
-                '2019',
-                'PG13',
-                'Action, Adventure, Drama',
-                'The plot',
-                os.path.join(temp_poster_path, 'Avengers: Endgame.jpg'),
-                'N/A',
-                '~/Movies/endgame.mp4',
-                '',
-                 State.UNWATCHED,
-                0
-            ],
-            [
-                'tt0368226',
-                'The Room',
-                '2003',
-                'R',
-                'Drama',
-                'Johnny is a successful bank executive who lives quietly in a San Francisco townhouse with his fiancée, Lisa. One day, putting aside any scruple, she seduces Johnny\'s best friend, Mark. From there, nothing will be the same again. ',
-                os.path.join(temp_poster_path, 'The Room.jpg'),
-                'N/A',
-                '~/Movies/room.mp4',
-                '',
-                State.UNWATCHED,
-                0
-            ],
-            [
-                'tt1285016',
-                'The Social Network',
-                '2010',
-                'PG-13',
-                'Drama, Biography',
-                'The plot',
-                os.path.join(temp_poster_path, 'The Social Network.jpg'),
-                'N/A',
-                '~/Movies/social_network.mp4',
-                '',
-                State.UNWATCHED,
-                30
-            ]
-        ]
-        for m in media:
-            self.media.append(Media(*m))
 
     def _load_persistant_media(self):
         self.media = []

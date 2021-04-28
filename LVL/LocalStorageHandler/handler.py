@@ -52,6 +52,9 @@ class LocalStorageHandler:
             self.connection.commit()
         except sqlite3.IntegrityError:
             print("Existing Movie in DB, skipping.")
+    
+    def save_media_to_db(self, media: Media):
+        return self.save_to_db(media.imdbID, media.title, media.year, media.rating, media.genre, media.plot, media.rottenTomatoesRating, media.filePath, media.duration, media.state.value, media.playCount)
 
     def update_in_db(self, media: Media):
         self.cursor.execute(

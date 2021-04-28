@@ -44,14 +44,16 @@ class LocalStorageHandler:
         )
 
     def save_to_db(self, imdbID, title, year, rating, genre, plot, poster, rottonTomatoesRating, filePath, duration, state, playCount):
-        # This will break if we try to insert something into it twice
-        self.cursor.execute(
-            '''INSERT INTO MOVIE VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-            )''', (imdbID, title, year, rating, genre, plot, poster, rottonTomatoesRating, filePath, duration, state, playCount,)
-        )
-        self.connection.commit()
-    
+        try:
+            self.cursor.execute(
+                '''INSERT INTO MOVIE VALUES (
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                )''', (imdbID, title, year, rating, genre, plot, poster, rottonTomatoesRating, filePath, duration, state, playCount,)
+            )
+            self.connection.commit()
+        except sqlite3.IntegrityError:
+            print("Existing Movie in DB, skipping.")
+
     def update_in_db(self, media: Media):
         self.cursor.execute(
             """UPDATE MOVIE SET title = ?, year = ?, rating = ?, genre = ?, plot = ?, poster = ?, 

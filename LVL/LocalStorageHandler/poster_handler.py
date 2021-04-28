@@ -15,7 +15,7 @@ def get_poster_file(imdb_id):
 
 def update_poster_file(imdb_id, new_file):
     # Copy the new file to the existing path
-    shutil.copy(new_file, get_poster_file(imdb_id))
+    return shutil.copy(new_file, get_poster_file(imdb_id))
 
 def download_poster(imdb_id):
     # This should be delegated to an OMDB API Helper class

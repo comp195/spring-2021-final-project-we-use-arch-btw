@@ -60,10 +60,12 @@ class EditWindow(Gtk.Window):
         if self.temp_poster is not None:
             # We need to save the poster
             print("Updating the poster")
-            update_poster_file(self.media.imdbID, self.temp_poster)
+            poster = update_poster_file(self.media.imdbID, self.temp_poster)
+        else:
+            poster = self.media.poster
         new_media = Media(self.media.imdbID, self.title_box.props.text, self.year_box.props.text, 
                             self.rating_box.props.text, self.genre_box.props.text, self.plot_buff.props.text, 
-                            self.media.poster, "", self.media.filePath, self.media.duration, 
+                            poster, "", self.media.filePath, self.media.duration, 
                             self.media_watch_state, int(self.play_count.props.value))
         self.local_storage_handler.update_in_db(new_media)
         self.destroy()

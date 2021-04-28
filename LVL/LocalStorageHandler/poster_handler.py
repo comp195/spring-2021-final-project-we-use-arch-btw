@@ -11,18 +11,18 @@ POSTER_MISSING_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.dirna
 if not os.path.exists(POSTER_STORAGE_PATH):
     os.makedirs(POSTER_STORAGE_PATH)
 
-def get_missing():
-    print(POSTER_MISSING_PATH)
+def get_proper_poster_file(imdb_id):
+    return os.path.join(POSTER_STORAGE_PATH, imdb_id)
 
 def get_poster_file(imdb_id):
-    path = os.path.join(POSTER_STORAGE_PATH, imdb_id)
+    path = get_proper_poster_file(imdb_id)
     if not os.path.isfile(path):
         path = POSTER_MISSING_PATH
     return path
 
 def update_poster_file(imdb_id, new_file):
     # Copy the new file to the existing path
-    return shutil.copy(new_file, get_poster_file(imdb_id))
+    return shutil.copy(new_file, get_proper_poster_file(imdb_id))
 
 def download_poster(imdb_id):
     # This should be delegated to an OMDB API Helper class

@@ -43,6 +43,9 @@ class LVLWindow(Gtk.ApplicationWindow):
         # Load media from database
         self._load_persistant_media()
 
+        self.load_posters()
+
+    def load_posters(self):
         # Cache the list of posters
         self._load_media_posters()
 
@@ -121,16 +124,23 @@ class LVLWindow(Gtk.ApplicationWindow):
             for m in self.media:
                 if m.imdbID == value:
                     self.open_media_dialog(m)
-                    break
         iconview.unselect_all()
 
     def open_media_dialog(self, media: Media):
         if self.media_ui is not None:
-            self.media_ui.destroy()
+            # Swap from destroy media_ui to exiting, so we cant have a media + edit at once
+            # self.media_ui.destroy()
+            return
         self.media_ui = MediaDetails(media, self.application, self.local_storage_handler)
+        self.media_ui.connect('show', self.on_edit_show)
         self.media_ui.present()
     
+    def on_edit_show(self, widget):
+        self._load_persistant_media()
+        self.load_posters()
+
     def _load_media_posters(self):
+        self.media_gobjects = {}
         for m in self.media:
             self.media_gobjects[m.imdbID] = GdkPixbuf.Pixbuf.new_from_file_at_size(get_poster_file(m.imdbID), 50, 75)
 
@@ -184,6 +194,7 @@ class LVLWindow(Gtk.ApplicationWindow):
             self.media.append(Media(*m))
 
     def _load_persistant_media(self):
+        self.media = []
         media = self.local_storage_handler.retrieve_all_from_db()
         for m in media:
             self.media.append(m)

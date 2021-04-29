@@ -64,6 +64,8 @@ class BulkImport(Gtk.Window):
     
     def on_edit(self, _widget, media: Media):
         print(f"Editing media {media}")
+        def teardown_search(_widget):
+            self.search_window = None
         def search_callback(_widget, m):
             print(f"Running search callback")
             new_media = m.media
@@ -76,12 +78,12 @@ class BulkImport(Gtk.Window):
             if self.search_window is not None:
                 print("Tearing down search")
                 self.search_window.destroy()
-                self.search_window = None
         # Bring up the search box
         if self.search_window is None:
             self.search_window = SearchWindow(media.title, media.filePath)
             self.search_window.present()
             self.search_window.connect('media-selected', search_callback)
+            self.search_window.connect('destroy', teardown_search)
 
     @Gtk.Template.Callback('confirm_button')
     def do_import(self, _widget):

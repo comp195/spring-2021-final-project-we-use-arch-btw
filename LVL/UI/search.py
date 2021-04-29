@@ -60,7 +60,7 @@ class SearchWindow(Gtk.Window):
 
     @Gtk.Template.Callback("cancel")
     def cancel_edit(self, widget):
-        self.hide()
+        self.destroy()
 
     @Gtk.Template.Callback("clicked_find")
     def clicked_find(self, widget):

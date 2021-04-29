@@ -1,5 +1,6 @@
 # pylint: disable=no-member
 # --- GTK Initialization ---
+from LVL.UI.bulk_import.bulk_import_dialog import BulkImport
 import os
 from re import search
 import sys
@@ -43,6 +44,8 @@ class BuklImportDialog(Gtk.Dialog):
         self.path = path
         self.handler = handler
 
+        self.autodetected_media = []
+
         AsyncCall(self.import_movies, self.callback)
     
     def show_progress(self):
@@ -79,21 +82,24 @@ class BuklImportDialog(Gtk.Dialog):
                     parsed.name, parsed.year)
                 new_media_obj = parse_result(omdb_data)
                 new_media_obj.filePath = media_file
-                download_poster(new_media_obj.imdbID)
-                GLib.idle_add(self.handler.save_media_to_db, new_media_obj)
+                self.autodetected_media.append(new_media_obj)
             except:
                 failed_files.append(media_file)
-                
+            
             self.processed_movies += 1
             GLib.idle_add(self.update_progress_bar)
-        
+
         if len(failed_files) > 0:
             self.hide()
             fail_text = '\n'.join(failed_files)
             show_error_dialog(self, f"The following files could not be imported:\n{fail_text}")
+        GLib.idle_add(self.show_bulk_import_dialog)
     
     def callback(self, _result, error):
         self.destroy()
+    
+    def show_bulk_import_dialog(self):
+        BulkImport(self.autodetected_media).show()
 
 @Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "main.ui"))
 class LVLWindow(Gtk.ApplicationWindow):

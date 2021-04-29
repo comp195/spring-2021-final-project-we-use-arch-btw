@@ -1,4 +1,5 @@
 # pylint: disable=no-member
+from LVL import show_error_dialog
 from LVL.Media.state import State
 import gi
 gi.require_version("Gtk", "3.0")
@@ -74,15 +75,18 @@ class MediaDetails(Gtk.Window):
         self.media.incrementPlayCount()
         self.local_storage_handler.update_in_db(self.media)
         self.populate_ui(self.media)
-        if platform.system() == 'Darwin' or platform.system() == 'Haiku':
-            subprocess.Popen(('open', self.media.filePath))
-        elif platform.system() == 'Windows':
-            os.startfile(self.media.filePath)
-        elif platform.system() == 'Linux' or platform.system() == 'BSD':
-            subprocess.Popen(('xdg-open', self.media.filePath))
-        else:
-            # Unsupported operating system, should probably error out here
-            pass
+        try:
+            if platform.system() == 'Darwin' or platform.system() == 'Haiku':
+                subprocess.Popen(('open', self.media.filePath))
+            elif platform.system() == 'Windows':
+                os.startfile(self.media.filePath)
+            elif platform.system() == 'Linux' or platform.system() == 'BSD':
+                subprocess.Popen(('xdg-open', self.media.filePath))
+            else:
+                # Unsupported operating system, should probably error out here
+                raise Exception("Unsupported operating system")
+        except Exception as e:
+            show_error_dialog(self, f"Could not play media: {e}")
 
 
     @Gtk.Template.Callback("delete_button_clicked")

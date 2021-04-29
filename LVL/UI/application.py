@@ -19,7 +19,7 @@ from LVL.LocalStorageHandler.handler import LocalStorageHandler
 from LVL.LocalStorageHandler.media_title_parser import parse_file
 from LVL.omdbapi import omdb_search, omdb_get, parse_result
 from LVL.threading import AsyncCall
-
+from LVL import show_error_dialog
 
 class BuklImportDialog(Gtk.Dialog):
 
@@ -62,6 +62,7 @@ class BuklImportDialog(Gtk.Dialog):
     def import_movies(self):
         print(f"Importing movies from {self.path}")
         media_files = []
+        failed_files = []
         for root, _, files in os.walk(self.path):
             for name in files:
                 print(f"Found file {os.path.join(root, name)}")
@@ -80,11 +81,16 @@ class BuklImportDialog(Gtk.Dialog):
                 new_media_obj.filePath = media_file
                 GLib.idle_add(self.handler.save_media_to_db, new_media_obj)
                 download_poster(new_media_obj.imdbID)
-            except Exception as e:
-                print(f"Could not import {media_file}")  # This should be a dialog box
-                raise e
+            except:
+                failed_files.append(media_file)
+                
             self.processed_movies += 1
             GLib.idle_add(self.update_progress_bar)
+        
+        if len(failed_files) > 0:
+            self.hide()
+            fail_text = '\n'.join(failed_files)
+            show_error_dialog(self, f"The following files could not be imported:\n{fail_text}")
     
     def callback(self, _result, error):
         self.destroy()

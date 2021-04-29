@@ -198,6 +198,8 @@ class LVLWindow(Gtk.ApplicationWindow):
 
     def on_media_exit(self, widget):
         self.media_ui = None
+        self._load_persistant_media()
+        self.load_posters()
 
     def _load_media_posters(self):
         self.media_gobjects = {}

@@ -22,6 +22,7 @@ class MediaDetails(Gtk.Window):
     media_year = Gtk.Template.Child()
     media_poster = Gtk.Template.Child()
     media_information = Gtk.Template.Child()
+    delete_confirm = Gtk.Template.Child()
 
     def __init__(self, media: Media, application, handler: LocalStorageHandler):
         super().__init__(application=application)
@@ -58,7 +59,27 @@ class MediaDetails(Gtk.Window):
         self.media = self.local_storage_handler.retrieve_from_db(self.media.imdbID)
         self.populate_ui(self.media)
         self.show()
-        
+
     @Gtk.Template.Callback("play_button_clicked")
     def on_play_button_click(self, widget):
         print("Opening the media player!")
+
+    @Gtk.Template.Callback("delete_button_clicked")
+    def delete_button_clicked(self, widget):
+        self.delete_confirm.show()
+        self.delete_confirm.connect('destroy', self.on_delete_confirm_exit)
+
+    def on_delete_confirm_exit(self, widget):
+        if self.delete_confirm:
+            self.delete_confirm.hide()
+
+    @Gtk.Template.Callback("click_yes")
+    def delete_confirmed(self, widget):
+        self.local_storage_handler.delete(self.media.imdbID)
+        self.delete_confirm.hide()
+        self.destroy()
+
+    @Gtk.Template.Callback("click_no")
+    def click_no(self, widget):
+        if self.delete_confirm:
+            self.delete_confirm.hide()

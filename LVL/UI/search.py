@@ -8,11 +8,10 @@ import os
 from re import search
 import sys
 from LVL.Media.media import Media
-from LVL.API.handler import search_by_title
 from LVL.LocalStorageHandler.poster_handler import get_poster_file, download_poster
 from LVL.LocalStorageHandler.handler import LocalStorageHandler
 from LVL.LocalStorageHandler.media_title_parser import parse_file
-from LVL.omdbapi import omdb_search, omdb_get, parse_result
+from LVL.omdbapi import omdb_search, omdb_get, parse_result, search_by_title
 
 
 class ListBoxRowWithData(Gtk.ListBoxRow):

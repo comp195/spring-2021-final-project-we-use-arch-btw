@@ -38,8 +38,25 @@ def parse_result(result: dict) -> Media:
         result['Rated'], 
         result['Genre'], 
         result['Plot'], 
-        "TODO", 
+        get_rotten_tomatoes(result['Ratings']),
         None, 
-        "???", 
+        result['Runtime'], 
         State.UNWATCHED, 
         0)
+
+def get_rotten_tomatoes(ratings):
+    for i in ratings:
+        if i['Source'] == 'Rotten Tomatoes':
+            return(i['Value'])
+    return "-"
+
+def search_by_title(title):
+    # For Searching. returns tuple of [title, id] if hits, otherwise None
+    results = make_omdb_request({'s': title})
+    if results["Response"] == "False":
+        return None
+    movie_list = []
+    for i in results['Search']:
+        if i["Type"] == "movie":
+            movie_list.append([i["Title"], i["imdbID"]])
+    return(movie_list)

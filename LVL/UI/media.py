@@ -4,7 +4,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version('GdkPixbuf', '2.0')
 from gi.repository import Gio, Gtk, GdkPixbuf, Gdk
-import os
+import os, subprocess, platform
 from re import search
 import sys
 from LVL.Media.media import Media
@@ -70,7 +70,20 @@ class MediaDetails(Gtk.Window):
 
     @Gtk.Template.Callback("play_button_clicked")
     def on_play_button_click(self, widget):
-        print("Opening the media player!")
+        print(f"Opening the default media player for file {self.media.filePath}")
+        self.media.incrementPlayCount()
+        self.local_storage_handler.update_in_db(self.media)
+        self.populate_ui(self.media)
+        if platform.system() == 'Darwin' or platform.system() == 'Haiku':
+            subprocess.Popen(('open', self.media.filePath))
+        elif platform.system() == 'Windows':
+            os.startfile(self.media.filePath)
+        elif platform.system() == 'Linux' or platform.system() == 'BSD':
+            subprocess.Popen(('xdg-open', self.media.filePath))
+        else:
+            # Unsupported operating system, should probably error out here
+            pass
+
 
     @Gtk.Template.Callback("delete_button_clicked")
     def delete_button_clicked(self, widget):

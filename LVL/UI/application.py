@@ -8,7 +8,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version('GdkPixbuf', '2.0')
 # --- End GTK Initialization ---
-from gi.repository import Gio, Gtk, GdkPixbuf, Gdk, GLib
+from gi.repository import Gio, Gtk, GdkPixbuf, Gdk, GLib, GObject
 
 from fuzzywuzzy import process
 from LVL.Media.media import Media
@@ -23,6 +23,10 @@ from LVL.threading import AsyncCall
 from LVL import show_error_dialog
 
 class BuklImportDialog(Gtk.Dialog):
+
+    __gsignals__ = {
+        "import-finish": (GObject.SIGNAL_RUN_FIRST, None, ())
+    }
 
     def __init__(self, path: str, handler: LocalStorageHandler) -> None:
         super().__init__()
@@ -46,7 +50,7 @@ class BuklImportDialog(Gtk.Dialog):
 
         self.autodetected_media = []
 
-        AsyncCall(self.import_movies, self.callback)
+        AsyncCall(self.import_movies, None)
     
     def show_progress(self):
         self.progress.pulse()
@@ -95,11 +99,15 @@ class BuklImportDialog(Gtk.Dialog):
             show_error_dialog(self, f"The following files could not be imported:\n{fail_text}")
         GLib.idle_add(self.show_bulk_import_dialog)
     
-    def callback(self, _result, error):
-        self.destroy()
-    
     def show_bulk_import_dialog(self):
-        BulkImport(self.autodetected_media).show()
+        self.hide()
+        self.bulk_import = BulkImport(self.autodetected_media, self.handler)
+        self.bulk_import.present()
+        def test(*args, **kwrags):
+            print("Bulk import destroyed")
+            self.destroy()
+        self.bulk_import.connect('destroy', test)
+
 
 @Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "main.ui"))
 class LVLWindow(Gtk.ApplicationWindow):
@@ -169,14 +177,24 @@ class LVLWindow(Gtk.ApplicationWindow):
                 self.api_search_window.hide()
             print(parsed)
             name = parsed.name if parsed is not None else os.path.splitext(os.path.basename(selection))[0]
-            self.api_search_window = SearchWindow(name, selection,  self.application, self.local_storage_handler)
+            self.api_search_window = SearchWindow(name, selection)
             file_picker.destroy()
             self.api_search_window.present()
-            self.api_search_window.connect('destroy', self.close_search_window)
+            self.api_search_window.connect('media-selected', self.search_callback)
         else:
             file_picker.destroy()
 
-    def close_search_window(self, widget):
+    def search_callback(self, _widget, g_media):
+        new_media = g_media.media
+        response = self.local_storage_handler.save_media_to_db(new_media)
+        if response is None:
+            show_error_dialog(self, f"{new_media.title} already exists in the application and will not be reimported.")
+        download_poster(new_media.imdbID)
+        self.close_search_window()
+    
+    def close_search_window(self):
+        if self.api_search_window is not None:
+            self.api_search_window.destroy()
         self.api_search_window = None
         self._load_persistant_media()
         self._load_media_posters()
@@ -193,10 +211,16 @@ class LVLWindow(Gtk.ApplicationWindow):
             path = file_picker.get_filename()
             file_picker.destroy()
             print(f"Open clicked {path}")
-            BuklImportDialog(path, self.local_storage_handler).run()
-            self._load_persistant_media()
-            self._load_media_posters()
-            self.update_search()
+            self.bulk_import_dialog = BuklImportDialog(path, self.local_storage_handler)
+
+            def callback(*args, **kwargs):
+                self._load_persistant_media()
+                self._load_media_posters()
+                self.update_search()
+                self.bulk_import_dialog = None
+            
+            self.bulk_import_dialog.connect('destroy', callback)
+            self.bulk_import_dialog.run()
         else:
             file_picker.destroy()
     

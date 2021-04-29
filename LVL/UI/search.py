@@ -1,19 +1,10 @@
 # pylint: disable=no-member
-from LVL.Media.state import State
+from LVL.UI import MediaGObject
 import gi
 gi.require_version("Gtk", "3.0")
-gi.require_version('GdkPixbuf', '2.0')
-from gi.repository import Gio, Gtk, GdkPixbuf, Gdk
+from gi.repository import Gtk, Gdk, GObject
 import os
-from re import search
-import sys
-from LVL.Media.media import Media
-from LVL.LocalStorageHandler.poster_handler import get_poster_file, download_poster
-from LVL.LocalStorageHandler.handler import LocalStorageHandler
-from LVL.LocalStorageHandler.media_title_parser import parse_file
-from LVL.omdbapi import omdb_search, omdb_get, parse_result, search_by_title
-from LVL import show_error_dialog # pylint: disable=import-error
-
+from LVL.omdbapi import omdb_get, parse_result, search_by_title
 
 class ListBoxRowWithData(Gtk.ListBoxRow):
     def __init__(self, title, imdbID):
@@ -27,16 +18,19 @@ class SearchWindow(Gtk.Window):
     
     __gtype_name__ = "SearchWindow"
 
+    __gsignals__ = {
+        "media-selected": (GObject.SIGNAL_RUN_FIRST, None, (MediaGObject,))
+    }
+
     search = Gtk.Template.Child()
     lists = Gtk.Template.Child()
 
-    def __init__(self, title, media_file, application, handler: LocalStorageHandler):
-        super().__init__(application=application)
+    def __init__(self, title, media_file):
+        super().__init__()
         
         self.media_file = media_file
         self.search_title = title
         self.search.props.text = title
-        self.local_storage_handler = handler
         
         self.update_results()
 
@@ -62,11 +56,7 @@ class SearchWindow(Gtk.Window):
         omdb_data = omdb_get(selected_id)
         new_media_obj = parse_result(omdb_data)
         new_media_obj.filePath = self.media_file
-        response = self.local_storage_handler.save_media_to_db(new_media_obj)
-        if response is None:
-            show_error_dialog(self, f"{new_media_obj.title} already exists in the application and will not be reimported.")
-        download_poster(new_media_obj.imdbID)
-        self.destroy()
+        self.emit('media-selected', MediaGObject(new_media_obj))
 
     @Gtk.Template.Callback("cancel")
     def cancel_edit(self, widget):

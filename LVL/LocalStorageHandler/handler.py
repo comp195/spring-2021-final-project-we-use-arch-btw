@@ -56,6 +56,7 @@ class LocalStorageHandler:
                 )''', (imdbID, title, year, rating, genre, plot, rottonTomatoesRating, filePath, duration, state, playCount,)
             )
             self.connection.commit()
+            return True
         except sqlite3.IntegrityError:
             print("Existing Movie in DB, skipping.")
             return None

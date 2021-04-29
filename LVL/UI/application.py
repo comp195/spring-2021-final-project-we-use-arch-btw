@@ -79,8 +79,8 @@ class BuklImportDialog(Gtk.Dialog):
                     parsed.name, parsed.year)
                 new_media_obj = parse_result(omdb_data)
                 new_media_obj.filePath = media_file
-                GLib.idle_add(self.handler.save_media_to_db, new_media_obj)
                 download_poster(new_media_obj.imdbID)
+                GLib.idle_add(self.handler.save_media_to_db, new_media_obj)
             except:
                 failed_files.append(media_file)
                 

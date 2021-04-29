@@ -4,6 +4,7 @@
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkDialog" id="delete_confirm">
     <property name="can-focus">False</property>
+    <property name="title" translatable="yes">Delete?</property>
     <property name="default-width">320</property>
     <property name="default-height">160</property>
     <property name="type-hint">dialog</property>
@@ -98,6 +99,7 @@
   </object>
   <template class="MediaWindow" parent="GtkWindow">
     <property name="can-focus">False</property>
+    <property name="title" translatable="yes">Movie Details</property>
     <property name="window-position">center</property>
     <property name="default-width">640</property>
     <property name="default-height">400</property>

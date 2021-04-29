@@ -240,6 +240,7 @@
                   <object class="GtkLabel" id="media_year">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="valign">center</property>
                     <property name="xpad">10</property>
                     <property name="label" translatable="yes">(1970)</property>
                     <property name="max-width-chars">6</property>

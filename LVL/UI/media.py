@@ -23,6 +23,7 @@ class MediaDetails(Gtk.Window):
     media_poster = Gtk.Template.Child()
     media_information = Gtk.Template.Child()
     delete_confirm = Gtk.Template.Child()
+    play_button = Gtk.Template.Child()
 
     def __init__(self, media: Media, application, handler: LocalStorageHandler):
         super().__init__(application=application)
@@ -42,6 +43,13 @@ class MediaDetails(Gtk.Window):
         self.text_buff = Gtk.TextBuffer()
         self.text_buff.props.text = f"{media.plot}\n\nRated: {media.rating}\nGenre: {media.genre}\nRotten Tomatoes: {media.rottenTomatoesRating}\nPlay Count: {media.playCount}\n\n{State.make_human_readable(media.state)}"
         self.media_information.props.buffer = self.text_buff
+
+        # Disable the play button if the file doesn't exist
+        if not os.path.exists(self.media.filePath):
+            self.play_button.props.opacity = 0.5
+            self.play_button.props.can_focus = False
+            self.play_button.props.sensitive = False
+            self.play_button.props.tooltip_text = "Media file not found"
 
 
     @Gtk.Template.Callback("edit_button_clicked")

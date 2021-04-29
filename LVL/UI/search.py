@@ -12,6 +12,7 @@ from LVL.LocalStorageHandler.poster_handler import get_poster_file, download_pos
 from LVL.LocalStorageHandler.handler import LocalStorageHandler
 from LVL.LocalStorageHandler.media_title_parser import parse_file
 from LVL.omdbapi import omdb_search, omdb_get, parse_result, search_by_title
+from LVL import show_error_dialog # pylint: disable=import-error
 
 
 class ListBoxRowWithData(Gtk.ListBoxRow):
@@ -61,7 +62,9 @@ class SearchWindow(Gtk.Window):
         omdb_data = omdb_get(selected_id)
         new_media_obj = parse_result(omdb_data)
         new_media_obj.filePath = self.media_file
-        self.local_storage_handler.save_media_to_db(new_media_obj)
+        response = self.local_storage_handler.save_media_to_db(new_media_obj)
+        if response is None:
+            show_error_dialog(self, f"{new_media_obj.title} already exists in the application and will not be reimported.")
         download_poster(new_media_obj.imdbID)
         self.destroy()
 

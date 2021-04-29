@@ -5,7 +5,6 @@ import os.path
 import os
 from LVL import get_data_file # pylint: disable=import-error
 
-
 class LocalStorageHandler:
 
     def __init__(self, dbPath = None):
@@ -59,6 +58,7 @@ class LocalStorageHandler:
             self.connection.commit()
         except sqlite3.IntegrityError:
             print("Existing Movie in DB, skipping.")
+            return None
     
     def save_media_to_db(self, media: Media):
         return self.save_to_db(media.imdbID, media.title, media.year, media.rating, media.genre, media.plot, media.rottenTomatoesRating, media.filePath, media.duration, media.state.value, media.playCount)

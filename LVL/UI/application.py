@@ -27,7 +27,7 @@ class BuklImportDialog(Gtk.Dialog):
         super().__init__()
         self.set_size_request(320, 60)
         self.set_border_width(24)
-        self.set_decorated(False)
+        # self.set_decorated(False)
         vbox = Gtk.Box.new(Gtk.Orientation.VERTICAL, 12)
         self.label = Gtk.Label("Importing Movies")
         vbox.add(self.label)
@@ -161,7 +161,9 @@ class LVLWindow(Gtk.ApplicationWindow):
             print(f"{selection} = {parsed}")
             if self.api_search_window is not None:
                 self.api_search_window.hide()
-            self.api_search_window = SearchWindow(parsed.name, selection,  self.application, self.local_storage_handler)
+            print(parsed)
+            name = parsed.name if parsed is not None else os.path.splitext(os.path.basename(selection))[0]
+            self.api_search_window = SearchWindow(name, selection,  self.application, self.local_storage_handler)
             file_picker.destroy()
             self.api_search_window.present()
             self.api_search_window.connect('destroy', self.close_search_window)

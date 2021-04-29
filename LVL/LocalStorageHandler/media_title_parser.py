@@ -4,7 +4,8 @@ import os.path as path
 
 SPECIAL_CHARACTER_REGEX = r"[`'.]"
 NON_WORD_REGEX = r"[\W]"
-BEGINNING_THE =r"^the\s"
+BEGINNING_THE = r"^the\s"
+
 
 class MediaInformation:
 
@@ -17,6 +18,7 @@ class MediaInformation:
     def __repr__(self) -> str:
         return str(self.__dict__)
 
+
 def clean_movie_title(title) -> str:
     if title is None:
         return None
@@ -27,11 +29,14 @@ def clean_movie_title(title) -> str:
     clean_title = re.sub(r"\+{2,}", '+', clean_title)
     return clean_title.replace('+', ' ')
 
+
 # Regexes from https://github.com/Radarr/Radarr/blob/627ab64fd023269c8bedece61e529329600a3419/src/NzbDrone.Core/Parser/Parser.cs
 EDITION_REGEX = r"\(?\b(?P<edition>(((Recut.|Extended.|Ultimate.)?(Director.?s|Collector.?s|Theatrical|Ultimate|Extended|Despecialized|(Special|Rouge|Final|Assembly)(?=(.(Cut|Edition|Version)))|\d{2,3}(th)?.Anniversary)(.(Cut|Edition|Version))?(.(Extended|Uncensored|Remastered|Unrated|Uncut|IMAX|Fan.?Edit))?|((Uncensored|Remastered|Unrated|Uncut|IMAX|Fan.?Edit|Edition|Restored|((2|3|4)in1))))))\b\)?"
 TITLE_REGEXES = [
-    r"^(?P<title>(?![(\[]).+?)((\W|_))(" + EDITION_REGEX + r".{1,3})?(?:(?<!(19|20)\d{2}.)(German|French|TrueFrench))(.+?)(?=((19|20)\d{2}|$))(?P<year>(19|20)\d{2}(?!p|i|\d+|\]|\W\d+))?(\W+|_|$)(?!\\)",
-    r"^(?P<title>(?![(\[]).+?)?(?:(?:[-_\W](?<![)\[!]))*" + EDITION_REGEX + r".{1,3}(?P<year>(1(8|9)|20)\d{2}(?!p|i|\d+|\]|\W\d+)))+(\W+|_|$)(?!\\)",
+    r"^(?P<title>(?![(\[]).+?)((\W|_))(" + EDITION_REGEX +
+    r".{1,3})?(?:(?<!(19|20)\d{2}.)(German|French|TrueFrench))(.+?)(?=((19|20)\d{2}|$))(?P<year>(19|20)\d{2}(?!p|i|\d+|\]|\W\d+))?(\W+|_|$)(?!\\)",
+    r"^(?P<title>(?![(\[]).+?)?(?:(?:[-_\W](?<![)\[!]))*" + EDITION_REGEX +
+    r".{1,3}(?P<year>(1(8|9)|20)\d{2}(?!p|i|\d+|\]|\W\d+)))+(\W+|_|$)(?!\\)",
     r"^(?P<title>(?![(\[]).+?)?(?:(?:[-_\W](?<![)\[!]))*(?P<year>(1(8|9)|20)\d{2}(?!p|i|(1(8|9)|20)\d{2}|\]|\W(1(8|9)|20)\d{2})))+(\W+|_|$)(?!\\)",
     r"^(?P<title>.+?)?(?:(?:[-_\W](?<![()\[!]))*(?P<year>(\[\w *\])))+(\W+|_|$)(?!\\)",
     r"^(?P<title>(?![(\[]).+?)?(?:(?:[-_\W](?<![)!]))*(?P<year>(1(8|9)|20)\d{2}(?!p|i|\d+|\W\d+)))+(\W+|_|$)(?!\\)",
@@ -44,6 +49,7 @@ SIMPLE_TITLE_REGEX = r"\s*(?:480[ip]|576[ip]|720[ip]|1080[ip]|2160[ip]|[xh][\W_]
 WEBSITE_PREFIX_REGEX = r"^\[\s*[-a-z]+(\.[a-z]+)+\s*\][- ]*|^www\.[a-z]+\.(?:com|net|org)[ -]*"
 WEBSITE_POSTFIX_REGEX = r"\[\s*[-a-z]+(\.[a-z0-9]+)+\s*\]$"
 CLEAN_QUALITY_BRACKETS_REGEX = r"\[[a-z0-9 ._-]+\]$"
+
 
 def _parse_movie_title(title: str) -> MediaInformation:
     original_title = title
@@ -58,9 +64,12 @@ def _parse_movie_title(title: str) -> MediaInformation:
     release_title = release_title.rstrip('-').rstrip('_')
     # Fix some weird brackets
     release_title = release_title.replace('【', '[').replace('】', ']')
-    simple_title = re.sub(SIMPLE_TITLE_REGEX, '', release_title, flags=re.IGNORECASE)
-    simple_title = re.sub(WEBSITE_PREFIX_REGEX, '', simple_title, flags=re.IGNORECASE)
-    simple_title = re.sub(WEBSITE_POSTFIX_REGEX, '', simple_title, flags=re.IGNORECASE)
+    simple_title = re.sub(SIMPLE_TITLE_REGEX, '',
+                          release_title, flags=re.IGNORECASE)
+    simple_title = re.sub(WEBSITE_PREFIX_REGEX, '',
+                          simple_title, flags=re.IGNORECASE)
+    simple_title = re.sub(WEBSITE_POSTFIX_REGEX, '',
+                          simple_title, flags=re.IGNORECASE)
 
     simple_title = re.sub(CLEAN_QUALITY_BRACKETS_REGEX, '', simple_title)
     # Actually do the title parsing
@@ -76,6 +85,7 @@ def _parse_movie_title(title: str) -> MediaInformation:
     # if we get this far, we didn't get a match
     return None
 
+
 def remove_file_extension(title: str) -> str:
     return re.sub(FILE_EXTENSION_REGEX, '', title, flags=re.IGNORECASE)
 
@@ -84,6 +94,8 @@ def parse_file(file: str) -> MediaInformation:
     basename = os.path.splitext(os.path.basename(file))[0]
     return _parse_movie_title(basename)
 
+
 if __name__ == "__main__":
     print(parse_file(
         "~/Desktop/Batman.The.Dark.Knight.2008.1080p.BluRay.x264.YIFY.mp4"))
+    print(parse_file("~/Desktop/TheRoom.mp4"))

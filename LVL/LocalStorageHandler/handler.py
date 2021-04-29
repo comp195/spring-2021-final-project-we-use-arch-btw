@@ -42,6 +42,13 @@ class LocalStorageHandler:
             )'''
         )
 
+    def delete(self, imdbID):
+        self.connection.execute(
+            '''DELETE from MOVIE where imdbID = ?''',
+            [imdbID]
+        )
+        self.connection.commit()
+
     def save_to_db(self, imdbID, title, year, rating, genre, plot, rottonTomatoesRating, filePath, duration, state, playCount):
         try:
             self.cursor.execute(

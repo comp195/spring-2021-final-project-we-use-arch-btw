@@ -8,9 +8,11 @@ import os
 from re import search
 import sys
 from LVL.Media.media import Media
-from LVL.LocalStorageHandler.handler import LocalStorageHandler
-from LVL.LocalStorageHandler.poster_handler import get_poster_file
 from LVL.API.handler import search_by_title
+from LVL.LocalStorageHandler.poster_handler import get_poster_file, download_poster
+from LVL.LocalStorageHandler.handler import LocalStorageHandler
+from LVL.LocalStorageHandler.media_title_parser import parse_file
+from LVL.omdbapi import omdb_search, omdb_get, parse_result
 
 
 class ListBoxRowWithData(Gtk.ListBoxRow):
@@ -28,9 +30,10 @@ class SearchWindow(Gtk.Window):
     search = Gtk.Template.Child()
     lists = Gtk.Template.Child()
 
-    def __init__(self, title, application, handler: LocalStorageHandler):
+    def __init__(self, title, media_file, application, handler: LocalStorageHandler):
         super().__init__(application=application)
         
+        self.media_file = media_file
         self.search_title = title
         self.search.props.text = title
         self.local_storage_handler = handler
@@ -38,7 +41,13 @@ class SearchWindow(Gtk.Window):
         self.update_results()
 
     def update_results(self):
-        results = search_by_title("Star Wars")
+        self.search_title = self.search.props.text
+        results = search_by_title(self.search_title)
+
+        current_rows = self.lists.get_children()
+        for i in current_rows:
+            self.lists.remove(i)
+
         if results is not None:
             for i in results:
                 row = ListBoxRowWithData(i[0], i[1])
@@ -49,27 +58,23 @@ class SearchWindow(Gtk.Window):
     @Gtk.Template.Callback("save")
     def save_media(self, widget):
         print("Saving the media")
-        # if self.temp_poster is not None:
-        #     # We need to save the poster
-        #     print("Updating the poster")
-        #     update_poster_file(self.media.imdbID, self.temp_poster)
-        # new_media = Media(self.media.imdbID, self.title_box.props.text, self.year_box.props.text, 
-        #                     self.rating_box.props.text, self.genre_box.props.text, self.plot_buff.props.text,
-        #                     self.rotten_tomatoes.props.text, self.media.filePath, self.media.duration, 
-        #                     self.media_watch_state, int(self.play_count.props.value))
-        # self.local_storage_handler.update_in_db(new_media)
+        selected_id = self.lists.get_selected_row().imdbID
+        omdb_data = omdb_get(selected_id)
+        new_media_obj = parse_result(omdb_data)
+        new_media_obj.filePath = self.media_file
+        self.local_storage_handler.save_media_to_db(new_media_obj)
+        download_poster(new_media_obj.imdbID)
         self.destroy()
 
     @Gtk.Template.Callback("cancel")
     def cancel_edit(self, widget):
         self.destroy()
 
-    @Gtk.Template.Callback("search_change")
-    def search_change(self, widget):
-        self.search_title = widget.props.text
-
-    # def do_key_press_event(self, event):
-    #     print(event.keyval)
-    #     if event.keyval == Gdk.KEY_Enter:
-    #         print("Hit Enter")
-    #     return Gtk.ApplicationWindow.do_key_press_event(self, event)
+    @Gtk.Template.Callback("clicked_find")
+    def clicked_find(self, widget):
+        self.update_results()
+    
+    def do_key_press_event(self, event):
+        if event.keyval == Gdk.KEY_Return:
+            self.update_results()
+        return Gtk.ApplicationWindow.do_key_press_event(self, event)

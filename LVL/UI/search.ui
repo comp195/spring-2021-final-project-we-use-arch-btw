@@ -27,6 +27,7 @@
                 <property name="primary-icon-activatable">False</property>
                 <property name="primary-icon-sensitive">False</property>
                 <signal name="search-changed" handler="search_change" swapped="no"/>
+                <signal name="stop-search" handler="stop_search" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">0</property>
@@ -40,6 +41,7 @@
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
                 <property name="use-stock">True</property>
+                <signal name="clicked" handler="clicked_find" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">1</property>

@@ -86,7 +86,7 @@ class LVLWindow(Gtk.ApplicationWindow):
             print(f"{selection} = {parsed}")
             if self.api_search_window is not None:
                 self.api_search_window.destory()
-            self.api_search_window = SearchWindow(parsed.name, self.application, self.local_storage_handler)
+            self.api_search_window = SearchWindow(parsed.name, selection,  self.application, self.local_storage_handler)
             file_picker.destroy()
             self.api_search_window.present()
             self.api_search_window.connect('destroy', self.test)
@@ -95,7 +95,9 @@ class LVLWindow(Gtk.ApplicationWindow):
             file_picker.destroy()
 
     def test(self, widget):
-        print("test")
+        self._load_persistant_media()
+        self._load_media_posters()
+        self.update_search()
 
     @Gtk.Template.Callback("add_media")
     def show_add_media(self, widget):

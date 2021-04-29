@@ -14,10 +14,11 @@ def search_by_title(title):
         return None
     movie_list = []
     for i in results['Search']:
-        movie_list.append([i["Title"], i["imdbID"]])
+        if i["Type"] == "movie":
+            movie_list.append([i["Title"], i["imdbID"]])
     return(movie_list)
 
 
 if __name__ == "__main__":
     print(search_by_title("WWWWWWWWWWWWWWWWW"))
-    print(search_by_title("Star Wars"))
+    print(search_by_title("Wall E"))

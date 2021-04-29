@@ -35,7 +35,7 @@ class MediaDetails(Gtk.Window):
 
     def populate_ui(self, media):
         self.media_title.props.label = media.title
-        self.media_year.props.label = f"<i>{media.year}</i>"
+        self.media_year.props.label = media.year
         self.poster_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(get_poster_file(media.imdbID), 300, 400)
         self.media_poster.props.pixbuf = self.poster_pixbuf
 

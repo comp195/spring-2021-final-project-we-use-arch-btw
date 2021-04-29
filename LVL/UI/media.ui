@@ -108,6 +108,7 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="homogeneous">True</property>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
@@ -225,6 +226,9 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="label" translatable="yes">MOVIE TITLE</property>
+                    <attributes>
+                      <attribute name="font-desc" value="Sans Bold 16"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -237,9 +241,12 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="xpad">10</property>
-                    <property name="label" translatable="yes">&lt;i&gt;(1970)&lt;/i&gt;</property>
-                    <property name="use-markup">True</property>
+                    <property name="label" translatable="yes">(1970)</property>
                     <property name="max-width-chars">6</property>
+                    <attributes>
+                      <attribute name="font-desc" value="Sans Italic 10"/>
+                      <attribute name="weight" value="ultralight"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="expand">False</property>

@@ -7,7 +7,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version('GdkPixbuf', '2.0')
 # --- End GTK Initialization ---
-from gi.repository import Gio, Gtk, GdkPixbuf, Gdk
+from gi.repository import Gio, Gtk, GdkPixbuf, Gdk, GLib
 
 from fuzzywuzzy import process
 from LVL.Media.media import Media
@@ -18,7 +18,76 @@ from LVL.LocalStorageHandler.poster_handler import get_poster_file, download_pos
 from LVL.LocalStorageHandler.handler import LocalStorageHandler
 from LVL.LocalStorageHandler.media_title_parser import parse_file
 from LVL.omdbapi import omdb_search, omdb_get, parse_result
+from LVL.threading import AsyncCall
 
+
+class BuklImportDialog(Gtk.Dialog):
+
+    def __init__(self, path: str, handler: LocalStorageHandler) -> None:
+        super().__init__()
+        self.set_size_request(320, 60)
+        self.set_border_width(24)
+        self.set_decorated(False)
+        vbox = Gtk.Box.new(Gtk.Orientation.VERTICAL, 12)
+        self.label = Gtk.Label("Importing Movies")
+        vbox.add(self.label)
+        self.progress = Gtk.ProgressBar(visible=True)
+        self.progress.set_pulse_step(0.1)
+        vbox.add(self.progress)
+        self.get_content_area().add(vbox)
+        self.pulse_timeout = GLib.timeout_add(125, self.show_progress)
+        self.show_all()
+
+        self.processed_movies = 0
+        self.total_movies = 0
+        self.path = path
+        self.handler = handler
+
+        AsyncCall(self.import_movies, self.callback)
+    
+    def show_progress(self):
+        self.progress.pulse()
+        return True
+    
+    def update_progress_bar(self):
+        if self.total_movies < 0:
+            return
+        if self.pulse_timeout is not None:
+            GLib.source_remove(self.pulse_timeout)
+            self.pulse_timeout = None
+        progress = self.processed_movies / self.total_movies
+        self.label.props.label = f"Importing Movies ({self.processed_movies} / {self.total_movies})"
+        self.progress.props.fraction = progress
+
+    def import_movies(self):
+        print(f"Importing movies from {self.path}")
+        media_files = []
+        for root, _, files in os.walk(self.path):
+            for name in files:
+                print(f"Found file {os.path.join(root, name)}")
+                media_files.append(os.path.join(root, name))
+        self.total_movies = len(media_files)
+        for media_file in media_files:
+            parsed = parse_file(media_file)
+            print(f"{media_file} = {parsed}")
+            if parsed is None:
+                print(f"Could not import {media_file}")  # This should also be a dialog box
+                continue
+            try:
+                omdb_data = omdb_get(parsed.imdb_id) if parsed.imdb_id is not None else omdb_search(
+                    parsed.name, parsed.year)
+                new_media_obj = parse_result(omdb_data)
+                new_media_obj.filePath = media_file
+                GLib.idle_add(self.handler.save_media_to_db, new_media_obj)
+                download_poster(new_media_obj.imdbID)
+            except Exception as e:
+                print(f"Could not import {media_file}")  # This should be a dialog box
+                raise e
+            self.processed_movies += 1
+            GLib.idle_add(self.update_progress_bar)
+    
+    def callback(self, _result, error):
+        self.destroy()
 
 @Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "main.ui"))
 class LVLWindow(Gtk.ApplicationWindow):
@@ -107,30 +176,10 @@ class LVLWindow(Gtk.ApplicationWindow):
                                         Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         response = file_picker.run()
         if response == Gtk.ResponseType.OK:
-            print(f"Open clicked {file_picker.get_filename()}")
-            media_files = []
-            for root, _, files in os.walk(file_picker.get_filename()):
-                for name in files:
-                    print(f"Found file {os.path.join(root, name)}")
-                    media_files.append(os.path.join(root, name))
-
+            path = file_picker.get_filename()
             file_picker.destroy()
-            # TODO: Make this async
-            for media_file in media_files:
-                parsed = parse_file(media_file)
-                print(f"{media_file} = {parsed}")
-                if parsed is None:
-                    print(f"Could not import {media_file}") # This should also be a dialog box
-                    continue
-                try:
-                    omdb_data = omdb_get(parsed.imdb_id) if parsed.imdb_id is not None else omdb_search(parsed.name, parsed.year)
-                    new_media_obj = parse_result(omdb_data)
-                    new_media_obj.filePath = media_file
-                    self.local_storage_handler.save_media_to_db(new_media_obj)
-                    download_poster(new_media_obj.imdbID)
-                except Exception as e:
-                    print(f"Could not import {media_file}") # This should be a dialog box
-                    raise e
+            print(f"Open clicked {path}")
+            BuklImportDialog(path, self.local_storage_handler).run()
             self._load_persistant_media()
             self._load_media_posters()
             self.update_search()

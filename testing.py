@@ -1,3 +1,6 @@
-import LVL.LocalStorageHandler.poster_handler as PosterHandler
+import pkg_resources
+import LVL
 
-PosterHandler.download_poster("tt1555196")
+data = pkg_resources.resource_filename("LVL.UI", "setup.py")
+
+print(data)

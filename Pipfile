@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+setuptools = "*"
 pygobject = "*"
 fuzzywuzzy = "*"
 python-levenshtein = "*"
@@ -11,6 +12,7 @@ appdirs = "*"
 
 [dev-packages]
 pylint = "*"
+build = "*"
 
 [requires]
 python_version = "3.9"

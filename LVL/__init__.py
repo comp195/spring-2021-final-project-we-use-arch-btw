@@ -31,3 +31,12 @@ def show_warning_dialog(parent, message: str):
 
 def show_info_dialog(parent, message: str):
     _show_dialog(parent, message, Gtk.MessageType.INFO)
+
+from LVL.LocalStorageHandler.handler import LocalStorageHandler
+from LVL.UI.application import Application
+
+def run_app():
+    local_storage_handler = LocalStorageHandler()
+    local_storage_handler.initialize_database()
+    app = Application(local_storage_handler)
+    app.run()

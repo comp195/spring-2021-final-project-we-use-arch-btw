@@ -9,6 +9,7 @@ gi.require_version("Gtk", "3.0")
 gi.require_version('GdkPixbuf', '2.0')
 # --- End GTK Initialization ---
 from gi.repository import Gio, Gtk, GdkPixbuf, Gdk, GLib, GObject
+import pkg_resources
 
 from fuzzywuzzy import process
 from LVL.Media.media import Media
@@ -109,7 +110,7 @@ class BuklImportDialog(Gtk.Dialog):
         self.bulk_import.connect('destroy', test)
 
 
-@Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "main.ui"))
+@Gtk.Template(filename=pkg_resources.resource_filename(__name__, "main.ui"))
 class LVLWindow(Gtk.ApplicationWindow):
     __gtype_name__ = "LVLWindow"
 

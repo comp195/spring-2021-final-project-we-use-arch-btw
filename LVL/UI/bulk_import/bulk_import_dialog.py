@@ -1,4 +1,5 @@
 # pylint: disable=no-member
+from pkg_resources import resource_filename
 from LVL.threading import AsyncCall
 from LVL.LocalStorageHandler.poster_handler import download_poster
 from LVL.LocalStorageHandler.handler import LocalStorageHandler
@@ -11,7 +12,7 @@ from gi.repository import Gtk, GLib
 
 import os
 
-@Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "bulk_import_dialog.ui"))
+@Gtk.Template(filename=resource_filename(__name__, "bulk_import_dialog.ui"))
 class BulkImport(Gtk.Window):
 
     __gtype_name__ = "BulkImportDialog"
@@ -39,7 +40,7 @@ class BulkImport(Gtk.Window):
     
     def make_entry(self, media: Media):
         builder = Gtk.Builder()
-        builder.add_from_file(os.path.join(os.path.dirname(__file__), "bulk_import_entry.ui"))
+        builder.add_from_file(resource_filename(__name__, "bulk_import_entry.ui"))
 
         box = builder.get_object('movie_entry')
         box.show()

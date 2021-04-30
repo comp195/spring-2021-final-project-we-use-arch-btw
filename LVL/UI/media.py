@@ -1,4 +1,5 @@
 # pylint: disable=no-member
+from pkg_resources import resource_filename
 from LVL import show_error_dialog
 from LVL.Media.state import State
 import gi
@@ -14,7 +15,7 @@ from LVL.LocalStorageHandler.poster_handler import get_poster_file
 from LVL.UI.edit import EditWindow
 
 
-@Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "media.ui"))
+@Gtk.Template(filename=resource_filename(__name__, "media.ui"))
 class MediaDetails(Gtk.Window):
 
     __gtype_name__ = "MediaWindow"

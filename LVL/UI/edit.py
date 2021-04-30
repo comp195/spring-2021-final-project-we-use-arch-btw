@@ -10,11 +10,12 @@ from re import search
 import sys
 import tempfile
 import shutil
+import pkg_resources
 from LVL.LocalStorageHandler.poster_handler import update_poster_file, get_poster_file
 from LVL.LocalStorageHandler.handler import LocalStorageHandler
 
 
-@Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "edit.ui"))
+@Gtk.Template(filename=pkg_resources.resource_filename(__name__, "edit.ui"))
 class EditWindow(Gtk.Window):
     
     __gtype_name__ = "EditWindow"

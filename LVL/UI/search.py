@@ -1,4 +1,5 @@
 # pylint: disable=no-member
+from pkg_resources import resource_filename
 from LVL.UI import MediaGObject
 import gi
 gi.require_version("Gtk", "3.0")
@@ -14,7 +15,7 @@ class ListBoxRowWithData(Gtk.ListBoxRow):
         self.imdbID = imdbID
         self.add(Gtk.Label(label=f"{self.title} ({self.year})"))
 
-@Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "search.ui"))
+@Gtk.Template(filename=resource_filename(__name__, "search.ui"))
 class SearchWindow(Gtk.Window):
     
     __gtype_name__ = "SearchWindow"

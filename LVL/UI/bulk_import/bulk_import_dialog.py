@@ -99,6 +99,7 @@ class _FinalImportDialog(Gtk.Dialog):
         super().__init__()
         self.set_size_request(320, 60)
         self.set_border_width(24)
+        self.set_title("Importing Movies")
         # self.set_decorated(False)
         vbox = Gtk.Box.new(Gtk.Orientation.VERTICAL, 12)
         self.label = Gtk.Label("Importing Movies")

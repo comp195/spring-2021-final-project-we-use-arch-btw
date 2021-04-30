@@ -1,3 +1,3 @@
 import LVL.LocalStorageHandler.poster_handler as PosterHandler
 
-PosterHandler.download_poster("tt0368226")
+PosterHandler.download_poster("tt1555196")

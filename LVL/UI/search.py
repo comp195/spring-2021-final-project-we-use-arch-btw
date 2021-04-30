@@ -7,11 +7,12 @@ import os
 from LVL.omdbapi import omdb_get, parse_result, search_by_title
 
 class ListBoxRowWithData(Gtk.ListBoxRow):
-    def __init__(self, title, imdbID):
+    def __init__(self, title, imdbID, year):
         super().__init__()
         self.title = title
+        self.year = year
         self.imdbID = imdbID
-        self.add(Gtk.Label(label=title))
+        self.add(Gtk.Label(label=f"{self.title} ({self.year})"))
 
 @Gtk.Template(filename=os.path.join(os.path.dirname(__file__), "search.ui"))
 class SearchWindow(Gtk.Window):
@@ -44,7 +45,7 @@ class SearchWindow(Gtk.Window):
 
         if results is not None:
             for i in results:
-                row = ListBoxRowWithData(i[0], i[1])
+                row = ListBoxRowWithData(i[0], i[1], i[2])
                 self.lists.add(row)
                 row.show_all()
 

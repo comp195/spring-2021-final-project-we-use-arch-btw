@@ -58,5 +58,5 @@ def search_by_title(title):
     movie_list = []
     for i in results['Search']:
         if i["Type"] == "movie":
-            movie_list.append([i["Title"], i["imdbID"]])
+            movie_list.append([i["Title"], i["imdbID"], i["Year"]])
     return(movie_list)

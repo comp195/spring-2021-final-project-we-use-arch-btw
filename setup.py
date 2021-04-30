@@ -31,7 +31,8 @@ setup(
     ],
     include_package_data = True,
     package_data={
-        "": ["missing", "*.ui"],
+        "": ["*.ui"],
+        "LVL.LocalStorageHandler": ["*.png"]
     },
     entry_points = {
         "console_scripts": [

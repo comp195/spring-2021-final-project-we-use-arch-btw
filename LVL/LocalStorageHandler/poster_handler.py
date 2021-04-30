@@ -3,10 +3,11 @@ import os
 import shutil
 import requests
 import json
+from pkg_resources import resource_filename
 
 OMDB_API_KEY = 'e945ee0b' # Should we really be hardcoding this?
 POSTER_STORAGE_PATH = get_data_file('posters')
-POSTER_MISSING_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..", "missing"))
+POSTER_MISSING_PATH = resource_filename(__name__, "missing_poster.png")
 
 if not os.path.exists(POSTER_STORAGE_PATH):
     os.makedirs(POSTER_STORAGE_PATH)

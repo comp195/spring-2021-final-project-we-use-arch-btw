@@ -1,6 +1,6 @@
 # Local Video Library
 
-A GUI for managing and watching locally downloaded movies and TV shows on your computer.
+A GUI for managing and watching locally downloaded movies on your computer.
 
 The main components are as follows:
 - A GTK user interface that displays your library
@@ -35,4 +35,4 @@ The main components are as follows:
 
 LVL will now be installed in `~/.local/bin`
 
-To run, in a terminal execute `lvl`
+To run, in a terminal execute `python -m lvl` or just `lvl` if the above is in your $PATH

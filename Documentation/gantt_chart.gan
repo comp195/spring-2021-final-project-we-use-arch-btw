@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Local Video Library (LVL)" company="We use arch btw" webLink="https://github.com/comp195/spring-2021-final-project-we-use-arch-btw" view-date="2021-02-14" view-index="0" gantt-divider-location="341" resource-divider-location="300" version="3.0.3000" locale="en_US">
+<?xml version="1.0" encoding="UTF-8"?><project name="Local Video Library (LVL)" company="We use arch btw" webLink="https://github.com/comp195/spring-2021-final-project-we-use-arch-btw" view-date="2021-01-24" view-index="0" gantt-divider-location="341" resource-divider-location="300" version="3.0.3000" locale="en_US">
     <description/>
-    <view zooming-state="default:5" id="gantt-chart">
+    <view zooming-state="default:6" id="gantt-chart">
         <field id="tpd3" name="Name" width="192" order="0"/>
         <field id="tpd4" name="Begin date" width="73" order="1"/>
         <field id="tpd5" name="End date" width="72" order="2"/>
@@ -47,7 +47,7 @@
         </taskproperties>
         <task id="0" name="Research GTK/PyGObject" color="#8cb6ce" meeting="false" start="2021-02-09" duration="15" complete="0" thirdDate="2021-02-17" thirdDate-constraint="0" expand="true"/>
         <task id="6" name="Application Framework" color="#8cb6ce" meeting="false" start="2021-02-21" duration="3" complete="0" thirdDate="2021-02-17" thirdDate-constraint="0" expand="true"/>
-        <task id="15" name="Database" color="#8cb6ce" meeting="false" start="2021-02-24" duration="56" complete="0" thirdDate="2021-01-29" thirdDate-constraint="0" expand="true">
+        <task id="15" name="Database" color="#8cb6ce" meeting="false" start="2021-02-24" duration="64" complete="0" thirdDate="2021-01-29" thirdDate-constraint="0" expand="true">
             <task id="18" name="Design Database Schema" color="#8cb6ce" meeting="false" start="2021-02-24" duration="5" complete="0" thirdDate="2021-01-29" thirdDate-constraint="0" expand="true">
                 <depend id="21" type="2" difference="0" hardness="Strong"/>
             </task>
@@ -57,40 +57,40 @@
             <task id="21" name="Connect DB to Python" color="#8cb6ce" meeting="false" start="2021-03-01" duration="8" complete="0" thirdDate="2021-03-01" thirdDate-constraint="0" expand="true">
                 <depend id="22" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="22" name="Hook up to rest of app" color="#8cb6ce" meeting="false" start="2021-04-14" duration="7" complete="0" thirdDate="2021-03-06" thirdDate-constraint="0" expand="true">
-                <task id="51" name="Delete" color="#8cb6ce" meeting="false" start="2021-04-14" duration="7" complete="0" thirdDate="2021-04-14" thirdDate-constraint="0" expand="true"/>
-                <task id="50" name="Add" color="#8cb6ce" meeting="false" start="2021-04-14" duration="7" complete="0" thirdDate="2021-04-14" thirdDate-constraint="0" expand="true"/>
-                <task id="49" name="Edit" color="#8cb6ce" meeting="false" start="2021-04-14" duration="7" complete="0" thirdDate="2021-04-14" thirdDate-constraint="0" expand="true"/>
+            <task id="22" name="Hook up to rest of app" color="#8cb6ce" meeting="false" start="2021-03-09" duration="51" complete="0" thirdDate="2021-03-06" thirdDate-constraint="0" expand="true">
+                <task id="51" name="Delete" color="#8cb6ce" meeting="false" start="2021-03-09" duration="3" complete="0" thirdDate="2021-04-14" thirdDate-constraint="0" expand="true"/>
+                <task id="50" name="Add" color="#8cb6ce" meeting="false" start="2021-03-09" duration="3" complete="0" thirdDate="2021-04-14" thirdDate-constraint="0" expand="true"/>
+                <task id="49" name="Edit" color="#8cb6ce" meeting="false" start="2021-03-09" duration="3" complete="0" thirdDate="2021-04-14" thirdDate-constraint="0" expand="true"/>
+                <task id="98" name="Refine CRUD with whole app context" color="#8cb6ce" meeting="false" start="2021-04-23" duration="6" complete="0" thirdDate="2021-03-09" thirdDate-constraint="0" expand="true"/>
             </task>
         </task>
-        <task id="16" name="UI" color="#000000" meeting="false" start="2021-03-10" duration="28" complete="0" thirdDate="2021-03-10" thirdDate-constraint="0" expand="true">
-            <task id="23" name="Overview Screen" meeting="false" start="2021-03-10" duration="11" complete="0" expand="true">
-                <task id="30" name="Skeleton" color="#8cb6ce" meeting="false" start="2021-03-10" duration="8" complete="0" thirdDate="2021-01-29" thirdDate-constraint="0" expand="true">
+        <task id="16" name="UI" color="#000000" meeting="false" start="2021-03-10" duration="47" complete="0" thirdDate="2021-03-10" thirdDate-constraint="0" expand="true">
+            <task id="23" name="Overview Screen" meeting="false" start="2021-03-10" duration="27" complete="0" expand="true">
+                <task id="30" name="Skeleton" color="#8cb6ce" meeting="false" start="2021-03-10" duration="20" complete="0" thirdDate="2021-01-29" thirdDate-constraint="0" expand="true">
                     <depend id="27" type="2" difference="0" hardness="Strong"/>
                     <depend id="28" type="2" difference="0" hardness="Strong"/>
                     <depend id="29" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="27" name="List Media" color="#8cb6ce" meeting="false" start="2021-03-18" duration="3" complete="0" thirdDate="2021-03-18" thirdDate-constraint="0" expand="true"/>
-                <task id="28" name="Search" color="#8cb6ce" meeting="false" start="2021-03-18" duration="3" complete="0" thirdDate="2021-03-18" thirdDate-constraint="0" expand="true"/>
-                <task id="29" name="Hambuger Menu" meeting="false" start="2021-03-18" duration="1" complete="0" expand="true"/>
+                <task id="27" name="List Media" color="#8cb6ce" meeting="false" start="2021-03-30" duration="3" complete="0" thirdDate="2021-03-18" thirdDate-constraint="0" expand="true"/>
+                <task id="28" name="Search" color="#8cb6ce" meeting="false" start="2021-03-30" duration="7" complete="0" thirdDate="2021-03-18" thirdDate-constraint="0" expand="true"/>
+                <task id="29" name="Hambuger Menu" meeting="false" start="2021-03-30" duration="1" complete="0" expand="true"/>
             </task>
-            <task id="24" name="Edit Screen" color="#000000" meeting="false" start="2021-03-19" duration="10" complete="0" thirdDate="2021-03-19" thirdDate-constraint="0" expand="true">
-                <task id="34" name="Skeleton" color="#8cb6ce" meeting="false" start="2021-03-19" duration="8" complete="0" thirdDate="2021-03-10" thirdDate-constraint="0" expand="true">
+            <task id="24" name="Media Screen" color="#000000" meeting="false" start="2021-04-06" duration="10" complete="0" thirdDate="2021-03-19" thirdDate-constraint="0" expand="true">
+                <task id="34" name="Skeleton" color="#8cb6ce" meeting="false" start="2021-04-06" duration="8" complete="0" thirdDate="2021-03-10" thirdDate-constraint="0" expand="true">
                     <depend id="35" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="35" name="Logic" color="#8cb6ce" meeting="false" start="2021-03-27" duration="2" complete="0" thirdDate="2021-03-27" thirdDate-constraint="0" expand="true"/>
+                <task id="35" name="Logic" color="#8cb6ce" meeting="false" start="2021-04-14" duration="2" complete="0" thirdDate="2021-03-27" thirdDate-constraint="0" expand="true"/>
             </task>
-            <task id="25" name="Media Screen" color="#8cb6ce" meeting="false" start="2021-03-29" duration="9" complete="0" thirdDate="2021-01-29" thirdDate-constraint="0" expand="true">
-                <task id="37" name="Skeleton" color="#8cb6ce" meeting="false" start="2021-03-29" duration="8" complete="0" thirdDate="2021-03-10" thirdDate-constraint="0" expand="true">
+            <task id="25" name="Edit Screen" color="#8cb6ce" meeting="false" start="2021-04-16" duration="10" complete="0" thirdDate="2021-01-29" thirdDate-constraint="0" expand="true">
+                <task id="37" name="Skeleton" color="#8cb6ce" meeting="false" start="2021-04-16" duration="8" complete="0" thirdDate="2021-03-10" thirdDate-constraint="0" expand="true">
                     <depend id="38" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="38" name="Logic" meeting="false" start="2021-04-06" duration="1" complete="0" expand="true"/>
+                <task id="38" name="Logic" meeting="false" start="2021-04-24" duration="2" complete="0" expand="true"/>
             </task>
         </task>
-        <task id="17" name="OMDB API" color="#8cb6ce" meeting="false" start="2021-04-06" duration="8" complete="0" thirdDate="2021-01-29" thirdDate-constraint="0" expand="true">
-            <depend id="22" type="2" difference="0" hardness="Strong"/>
-            <task id="43" name="Handle Paging" color="#8cb6ce" meeting="false" start="2021-04-06" duration="8" complete="0" thirdDate="2021-01-29" thirdDate-constraint="0" expand="true"/>
-            <task id="44" name="File Name Search" color="#8cb6ce" meeting="false" start="2021-04-06" duration="8" complete="0" thirdDate="2021-01-29" thirdDate-constraint="0" expand="true"/>
+        <task id="17" name="OMDB API" color="#8cb6ce" meeting="false" start="2021-04-21" duration="8" complete="0" thirdDate="2021-01-29" thirdDate-constraint="0" expand="true">
+            <task id="43" name="Handle Paging" color="#8cb6ce" meeting="false" start="2021-04-21" duration="8" complete="0" thirdDate="2021-01-29" thirdDate-constraint="0" expand="true"/>
+            <task id="44" name="File Name Search" color="#8cb6ce" meeting="false" start="2021-04-21" duration="8" complete="0" thirdDate="2021-01-29" thirdDate-constraint="0" expand="true"/>
         </task>
         <task id="52" name="Class Deadlines" meeting="false" start="2021-02-21" duration="69" complete="0" expand="true">
             <task id="53" name="Snapshot 1" meeting="false" start="2021-02-21" duration="1" complete="0" expand="true"/>
@@ -102,7 +102,7 @@
             </task>
             <task id="65" name="Poster Submission" color="#8cb6ce" meeting="false" start="2021-04-09" duration="1" complete="0" thirdDate="2021-04-09" thirdDate-constraint="0" expand="true"/>
             <task id="68" name="Oral Presentation" meeting="false" start="2021-04-30" duration="1" complete="0" expand="true"/>
-            <task id="69" name="Final Implementation" meeting="false" start="2021-04-30" duration="1" complete="0" expand="true"/>
+            <task id="69" name="Final Implementation" color="#8cb6ce" meeting="false" start="2021-04-30" duration="1" complete="0" thirdDate="2021-04-30" thirdDate-constraint="0" expand="true"/>
         </task>
     </tasks>
     <resources/>

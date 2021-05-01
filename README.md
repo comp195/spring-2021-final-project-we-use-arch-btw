@@ -31,6 +31,11 @@ The main components are as follows:
 - Pip
 - Git
 - GTK (will already be installed on most \*nix graphical enviornments)
+
+The application is intended to run on a \*nix system (Linux or BSD).
+
+It may, however, work using Windows or macOS as GTK is a univeral toolkit, but it is not supported.
+
 1. In a terminal, run the following: `pip install git+https://github.com/comp195/spring-2021-final-project-we-use-arch-btw.git@main#egg=LVL`
 
 LVL will now be installed in `~/.local/bin`

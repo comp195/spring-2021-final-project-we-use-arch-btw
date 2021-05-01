@@ -22,3 +22,17 @@ The main components are as follows:
 1. Install dependencies: `pipenv install --site-packages`
 2. (Optional) Install development dependencies: `pipenv install --dev`
 3. Activate the virtualenv with `pipenv shell`
+
+## Running Local Video Library
+
+### Requirements
+
+- Python 3.9
+- Pip
+- Git
+- GTK (will already be installed on most \*nix graphical enviornments)
+1. In a terminal, run the following: `pip install git+https://github.com/comp195/spring-2021-final-project-we-use-arch-btw.git@main#egg=LVL`
+
+LVL will now be installed in `~/.local/bin`
+
+To run, in a terminal execute `lvl`
